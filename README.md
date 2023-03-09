@@ -1,5 +1,6 @@
 # PlayerlyAPI
 A API for https://github.com/ItsToxicGG/PlayerDataWebsitePMMP
+request anything that should be implemented in PlayerlyAPI
 # Config
 enter the mysql data in config.yml
 # How to interact with the api
@@ -25,14 +26,9 @@ $this->stats->setWins($player, 1); // $player & an number/int/integar
 ```
 Add & Remove
 ```php
-$this->stats->addKill($player); // $player, only adds 1 kill
-$this->stats->addKills($player, 5); // $player, add any amount of kills
-$this->stats->removeWins($player, 1); // $player & an number/int/integar
-```
-
-Make
-```php
-soon!
+$this->stats->getDataBase()->addKill($player); // $player, only adds 1 kill
+$this->stats->getDataBase()->addKills($player, 5); // $player, add any amount of kills
+$this->stats->getDataBase()->removeWins($player, 1); // $player & an number/int/integar
 ```
 
 # Tests

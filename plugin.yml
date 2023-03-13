@@ -1,0 +1,6 @@
+name: PlayerlyAPI
+description: playerly api for stats
+version: 1.0
+api: 4.0.0 # 5.0.0 soon!
+author: Toxic
+main: Toxic\Statics\Stats

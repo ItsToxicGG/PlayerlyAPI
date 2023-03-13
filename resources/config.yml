@@ -1,17 +1,5 @@
-Mysql-Data:
-   db-name: Example
-   username: Example
+mysql-settings:
+   host: Example
+   user: Example
    password: # can be a password or not
-   port: 
-
-# true or false
-# default value is true
-Kills: true
-Wins: true
-Deaths: true
-Loses: true
-# other
-# default value for this is nothing
-Blocks-Place: false
-Blocks-Breaked: false
-Chats-Send: false
+   database: Example 

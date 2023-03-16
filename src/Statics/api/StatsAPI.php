@@ -40,7 +40,6 @@ class StatsAPI {
     */
     public function AddPlayer(Player $player){
         if(!$this->accountExists(strtolower($player->getName()))){
-        if($this->getPlayer($player) == null){
             $this->db->query("INSERT INTO `stats`
                 (`username`, `xuid`, `breaks`, `places`, `deaths`, `kicked`, `banned`,`kills`,`wins`)
                 VALUES

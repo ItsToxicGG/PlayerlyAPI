@@ -4,7 +4,7 @@ namespace Statics\api;
 
 use pocketmine\player\Player;
 use pocketmine\utils\Config;
-use Statics\api\Stats;
+use Statics\Stats;
 use mysqli;
 
 class StatsAPI {

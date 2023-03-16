@@ -34,20 +34,6 @@ class StatsAPI {
         $this->db->query($querycontents);
     }
 
-    // Adds player
-    /**
-     * @param Player $player
-    */
-    public function AddPlayer(Player $player){
-        if(!$this->accountExists(strtolower($player->getName()))){
-            $this->db->query("INSERT INTO `stats`
-                (`username`, `xuid`, `breaks`, `places`, `deaths`, `kicked`, `banned`,`kills`,`wins`)
-                VALUES
-                ('".$this->db->escape_string(strtolower($player->getDisplayName()))."', '".$this->db->real_escape_string(strtolower($player->getXuid()))."', '0','0','0','0','0','0','0')
-                ");
-        } 
-    }
-
     /**
      * @param string $name
      * @return bool

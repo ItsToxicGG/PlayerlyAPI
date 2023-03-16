@@ -17,6 +17,7 @@ class Stats extends PluginBase implements Listener {
         $this->getLogger()->info("PlayerlyAPI");
         $this->getLogger()->info("Warning: Earlier Beta");
         $this->getLogger()->info("Early Beta, pls beware of bugs.");
+        $this->getServer()->getPluginManager()->registerEvents($this, $this); 
         $this->getServer()->getCommandMap()->register("stats", new StatsCommand($this));
         $this->s = new StatsAPI($this);
     }
@@ -32,10 +33,10 @@ class Stats extends PluginBase implements Listener {
     public function onJoin(PlayerJoinEvent $event){
     $player = $event->getPlayer();
     if(!$this->getStatsAPI()->accountExists(strtolower($player->getName()))){
-        $this->db->query("INSERT INTO `stats`
+        $this->getStatsAPI()->db->query("INSERT INTO `stats`
             (`username`, `xuid`, `breaks`, `places`, `deaths`, `kicked`, `banned`,`kills`,`wins`)
             VALUES
-            ('".$this->db->escape_string(strtolower($player->getDisplayName()))."', '".$this->db->real_escape_string(strtolower($player->getXuid()))."', '0','0','0','0','0','0','0')
+            ('".$this->getStatsAPI()->db->escape_string(strtolower($player->getDisplayName()))."', '".$this->getStatsAPI()->db->real_escape_string(strtolower($player->getXuid()))."', '0','0','0','0','0','0','0')
         ");
     } 
     }

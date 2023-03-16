@@ -30,13 +30,12 @@ class Stats extends PluginBase implements Listener {
     }
 
     public function onJoin(PlayerJoinEvent $event){
-        $player = $event->getPlayer();
-        /** 
-         * No need for check because
-         * in the function addPlayer
-         * it already checks if the account
-         * exists or not
-        */
-        $this->getStatsAPI()->addPlayer($player);
-    }
+    $player = $event->getPlayer();
+    if(!$this->getStatsAPI()->accountExists(strtolower($player->getName()))){
+        $this->db->query("INSERT INTO `stats`
+            (`username`, `xuid`, `breaks`, `places`, `deaths`, `kicked`, `banned`,`kills`,`wins`)
+            VALUES
+            ('".$this->db->escape_string(strtolower($player->getDisplayName()))."', '".$this->db->real_escape_string(strtolower($player->getXuid()))."', '0','0','0','0','0','0','0')
+        ");
+    } 
 }

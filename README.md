@@ -30,6 +30,24 @@ $this->stats->getDataBase()->addKills($player, 5); // $player, add any amount of
 $this->stats->getDataBase()->removeWins($player, 1); // $player & an number/int/integar
 ```
 
+Website
+```php
+include "config.php"; // where the database connection is (seperated from main)
+// NOTE: that some things in this code you will have to handle your self (such as the $username)
+$result = mysqli_query($conn, "SELECT * FROM stats WHERE username='$username'"); // $username must be handled by you & $conn is in the config.php
+// check for query execution errors
+if (!$result) {
+     echo "Error executing query: " . mysqli_error($conn);
+     exit();
+}
+
+while($row = mysqli_fetch_assoc($result)){
+echo " - Name: " . $row["username"]. "<br>" ." - Kills: " . $row["kills"]. "<br>" . "- Wins:" . $row["wins"]. "<br>" . "- Deaths:" . $row["deaths"]. "<br>";
+}
+mysqli_close($conn);
+
+?>
+```
 # Tests
 **SOON
 

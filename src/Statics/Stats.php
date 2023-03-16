@@ -4,6 +4,7 @@ namespace Statics;
 
 use pocketmine\plugin\PluginBase;
 use pocketmine\event\Listener;
+use pocketmine\event\player\PlayerJoinEvent;
 use Statics\api\StatsAPI;
 use Statics\api\OtherStats;
 use Statics\command\StatsCommand;

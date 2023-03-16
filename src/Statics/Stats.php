@@ -13,9 +13,6 @@ class Stats extends PluginBase implements Listener {
     /** @var StatsAPI $s */
     private $s;
 
-    /** @var OtherAPI $o */
-    private $o;
-
     public function onEnable(): void{
         $this->getLogger()->info("PlayerlyAPI");
         $this->getLogger()->info("Warning: Earlier Beta");

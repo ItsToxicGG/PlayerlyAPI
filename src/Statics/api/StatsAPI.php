@@ -45,7 +45,6 @@ class StatsAPI {
                 VALUES
                 ('".$this->db->escape_string(strtolower($player->getDisplayName()))."', '".$this->db->real_escape_string(strtolower($player->getXuid()))."', '0','0','0','0','0','0','0')
                 ");
-        }
         } 
     }
 

@@ -6,7 +6,6 @@ use pocketmine\plugin\PluginBase;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerJoinEvent;
 use Statics\api\StatsAPI;
-use Statics\api\OtherStats;
 use Statics\command\StatsCommand;
 
 class Stats extends PluginBase implements Listener {
@@ -22,16 +21,11 @@ class Stats extends PluginBase implements Listener {
         $this->getLogger()->info("Warning: Earlier Beta");
         $this->getLogger()->info("Early Beta, pls beware of bugs.");
         $this->getServer()->getCommandMap()->register("stats", new StatsCommand($this));
-        $this->o = new OtherStats();
         $this->s = new StatsAPI($this);
     }
 
     public function getStatsAPI(){
         return $this->s;
-    }
-
-    public function getOtherStatsAPI(){
-        return $this->o;
     }
 
     public function onLoad(): void{

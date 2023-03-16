@@ -9,7 +9,9 @@ use mysqli;
 
 class StatsAPI {
 
-    public function __construct(public Stats $plugin){
+    public Stats $plugin;	
+	
+    public function __construct(Stats $plugin){
         $this->plugin = $plugin;
         $config = $this->plugin->getConfig()->get("mysql-settings");
         $this->db = new mysqli($config['host'], $config['user'], $config['password'], $config['database']);

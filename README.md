@@ -1,9 +1,8 @@
 # PlayerlyAPI
-A API for https://github.com/ItsToxicGG/PlayerDataWebsitePMMP
 request anything that should be implemented in PlayerlyAPI
 # Config
 enter the mysql data in config.yml
-# How to interact with the api
+# How to Use the api
 Get & Set
 ```php
 // to get or set something thats already in the api easily by
@@ -32,8 +31,6 @@ $this->stats->getDataBase()->removeWins($player, 1); // $player & an number/int/
 ```
 
 # Tests
-The tests for the website are at https://github.com/ItsToxicGG/PlayerDataWebsitePMMP
+**SOON
 
-The tests in-game is below:
-
-Stats UI:
+**SOON

@@ -9,6 +9,8 @@ use mysqli;
 
 class StatsAPI {
 
+    public mysqli $db;	
+	
     public Stats $plugin;	
 	
     public function __construct(Stats $plugin){

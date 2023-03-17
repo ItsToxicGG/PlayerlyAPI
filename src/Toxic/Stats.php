@@ -52,9 +52,9 @@ class Stats extends PluginBase implements Listener {
                     $sender->sendMessage("Please specify a player.");
                     return true;
                 }
-                $playerName = $sender->getName();
+                $playerName = strtolower($sender->getName());
             } else {
-                $playerName = $args[0];
+                $playerName = strtolower($args[0]);
             }
             $result = "SELECT * FROM stats WHERE username = $playerName";
             if($result->num_rows === 0) {
@@ -62,7 +62,6 @@ class Stats extends PluginBase implements Listener {
                 return true;
             }
             $row = $result->fetch_assoc();
-            $playerName = $player->getName();
             $kills = $row['kills']; $wins = $row['wins'];
             $deaths = $row['deaths'];
             $txt = 
@@ -80,7 +79,7 @@ class Stats extends PluginBase implements Listener {
             " Kicked: Soon\n".
             " Muted: Soon\n"
             ;
-            $player->sendMessage($txt);
+            $sender->sendMessage($txt);
         }
         return false;
     }

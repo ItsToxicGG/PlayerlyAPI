@@ -56,11 +56,11 @@ class Stats extends PluginBase implements Listener {
             } else {
                 $playerName = strtolower($args[0]);
             }
-            $result = "SELECT * FROM stats WHERE username = $playerName";
-            if($result === false) {
-                $sender->sendMessage("An error occurred while retrieving stats for $playerName.");
-                return true;
-            }
+            $result = "SELECT * FROM stats WHERE username = '?'";
+            $stmt = $this->database->prepare($query);
+            $stmt->bind_param("s", $playerName);
+            $stmt->execute();
+            $result = $stmt->get_result();
             if($result->num_rows === 0) {
                 $sender->sendMessage("Stats not found for $playerName.");
                 return true;

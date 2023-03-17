@@ -31,10 +31,17 @@ class StatsCommand extends Command implements PluginOwned {
             $kills = $this->plugin->getStatsAPI()->getKills($sender); 
             $wins = $this->plugin->getStatsAPI()->getWins($sender);
             $deaths = $this->plugin->getStatsAPI()->getDeaths($sender);
+            $sessiontime = $this->plugin->getSessionTime($name);
+            $playtime = $this->plugin->getPlaytime($sender);
+            $hours = floor($playtime / 3600);
+            $minutes = floor(($playtime / 60) % 60);
+            $seconds = $playtime % 60;
             $sender->sendMessage("Name: " . $name);
             $sender->sendMessage("Kills: " . $kills);
             $sender->sendMessage("Wins: " . $wins);
             $sender->sendMessage("Deaths: " . $deaths);
+            $sender->sendMessage("Session Time: " . $sessiontime);
+            $sender->sendMessage("Total PlayTime: " . $playtime);
             } else {
                 $sender->sendMessage("Use this command in-game");
             }

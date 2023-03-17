@@ -40,7 +40,7 @@ class UnMuteCmd extends Command implements PluginOwned {
                 $sender->sendMessage(TextFormat::RED . "Usage: /unmute <player>");
                 return true;
             }
-            $player = $this->getServer()->getPlayer($args[0]);
+            $player = $this->plugin->getServer()->getPlayer($args[0]);
             if($player === null){
                 $sender->sendMessage(TextFormat::RED . "The player {$args[0]} was not found.");
                 return true;

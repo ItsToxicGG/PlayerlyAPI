@@ -40,7 +40,7 @@ class MuteCmd extends Command implements PluginOwned {
                 $sender->sendMessage(TextFormat::RED . "Usage: /mute <player> <time> [reason]");
                 return true;
             }
-            $player = $this->getServer()->getPlayer($args[0]);
+            $player = $this->plugin->getServer()->getPlayer($args[0]);
             if($player === null){
                 $sender->sendMessage(TextFormat::RED . "Player not found.");
                 return true;
@@ -55,7 +55,7 @@ class MuteCmd extends Command implements PluginOwned {
                 return true;
             }
             $reason = isset($args[2]) ? implode(" ", array_slice($args, 2)) : "";
-            $this->plugin->getMuteAPI()->query("INSERT INTO mutes (player, mutetime, reason) VALUES ('" . $player->getName() . "', " . $time . ", '" . $this->mysqli->real_escape_string($reason) . "')");
+            $this->plugin->getMuteAPI()->query("INSERT INTO mutes (player, mutetime, reason) VALUES ('" . $player->getName() . "', " . $time . ", '" . $this->plugin->getMuteAPI()->db->real_escape_string($reason) . "')");
             $sender->sendMessage(TextFormat::GREEN . "Player " . $player->getName() . " has been muted until " . date("Y-m-d H:i:s", $time) . ".");
             $player->sendMessage(TextFormat::RED . "You have been muted until " . date("Y-m-d H:i:s", $time) . ". Reason: " . $reason);
             return true;

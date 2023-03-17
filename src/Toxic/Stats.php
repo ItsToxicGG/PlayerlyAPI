@@ -4,25 +4,35 @@ namespace Toxic;
 
 use pocketmine\plugin\PluginBase;
 use pocketmine\event\Listener;
-use pocketmine\event\player\{PlayerJoinEvent, PlayerQuitEvent, PlayerKickEvent};
+use pocketmine\event\player\{PlayerJoinEvent, PlayerQuitEvent, PlayerKickEvent, PlayerChatEvent};
 use Toxic\api\{StatsAPI, MuteAPI, BanAPI};
 use Toxic\task\SessionTimeTask;
 use Toxic\command\{MuteCmd, UnMuteCmd};
 use Vecnavium\FormsUI\SimpleForm;
 use pocketmine\player\Player;
+use pocketmine\command\Command;
+use pocketmine\command\CommandSender;
+use pocketmine\command\ConsoleCommandSender;
+use pocketmine\command\PluginCommand;
 
 class Stats extends PluginBase implements Listener {
 
     /** @var StatsAPI $s */
     private $s;
 
+    /** @var BanAPI $b */
+    private $b;
+
+    /** @var MuteAPI $m */
+    private $m;
+
     public function onEnable(): void{
         $this->getLogger()->info("PlayerlyAPI");
         $this->getLogger()->info("Warning: Earlier Beta");
         $this->getLogger()->info("Early Beta, pls beware of bugs.");
         $this->getServer()->getPluginManager()->registerEvents($this, $this); 
-        $this->getServer()->getCommandMap()->register("mute", new MuteCommand($this));
-        $this->getServer()->getCommandMap()->register("unmute", new UnMuteCommand($this));
+        $this->getServer()->getCommandMap()->register("mute", new MuteCmd($this));
+        $this->getServer()->getCommandMap()->register("unmute", new UnMuteCmd($this));
         $this->getScheduler()->scheduleRepeatingTask(new SessionTimeTask($this->getStatsAPI()->db), 1200);
         $this->s = new StatsAPI($this);
         $this->m = new MuteAPI($this);
@@ -149,4 +159,18 @@ class Stats extends PluginBase implements Listener {
         $seconds = $time % 60;
         return "$hours:$minutes:$seconds";
     }
+
+    public function onPlayerChat(PlayerChatEvent $event){
+        $player = $event->getPlayer();
+        $username = $player->getName();
+        $result = $this->mysqli->query("SELECT * FROM mutes WHERE username = '" . $username . "' AND mutetime > " . time());
+        if($result->num_rows > 0){
+            $event->cancel();
+            $row = $result->fetch_assoc();
+            $remainingTime = $row['mutetime'] - time();
+            $reason = $row['reason'];
+            $player->sendMessage(TextFormat::RED . "You are muted for " . $remainingTime . " seconds. Reason: " . $reason);
+        }
+    }
 }
+

@@ -45,7 +45,8 @@ class MuteAPI {
    */
   public function addMuteToPlayer(Player $player, string $reason, int $t): bool{
     $time = strtotime($t);
-    $this->db->query("INSERT INTO mutes (player, mutetime, reason) VALUES ('" . $player->getName() . "', " . $time . ", '" . $this->mysqli->real_escape_string($reason) . "')");
+    $this->db->query("INSERT INTO mutes (player, mutetime, reason) VALUES ('" . $player->getName() . "', " . $time . ", '" . $this->db->real_escape_string($reason) . "')");
+    return false;
   }
 
     /**

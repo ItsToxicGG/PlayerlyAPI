@@ -21,7 +21,8 @@ class StatsAPI {
             die("Connection Failed" . $this->db->connect_error);
         }
         $querycontents = "CREATE TABLE IF NOT EXISTS stats (
-            username VARCHAR(255) PRIMARY KEY, 
+            username VARCHAR(255) PRIMARY KEY,
+            uuid VARCHAR(255), 
             xuid VARCHAR(50),
             breaks INT DEFAULT 0,
             places INT DEFAULT 0,
@@ -31,7 +32,8 @@ class StatsAPI {
             kills INT DEFAULT 0,
             wins INT DEFAULT 0,
             time INT,
-            playtime INT
+            playtime INT,
+            joined DATETIME
           );";
         $this->db->query($querycontents);
     }

@@ -24,11 +24,11 @@ public function onRun() : void {
 }
 
 public function getSessionTime($username) {
-    $username = $player->getDisplayName();
     $result = $this->db->query("SELECT time FROM stats WHERE username = '$username'");
+    $sessionTime = 0;
     if ($result instanceof \mysqli_result && $result->num_rows > 0) {
         $row = $result->fetch_assoc();
-        $sessionTime = $row["time"] + 1;
+        $sessionTime = (int) $row["time"] + 1;
     }
     return $sessionTime;
 }

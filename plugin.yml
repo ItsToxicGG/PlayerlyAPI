@@ -9,8 +9,11 @@ commands:
   stats:
     description: "Check your stats or another players"
     aliases: [profile, user]
+    permission: stats.command
  
 permission:
+  stats.command:
+    default: true
   unmute.command:
     default: op
   mute.command:

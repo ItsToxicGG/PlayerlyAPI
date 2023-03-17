@@ -29,7 +29,9 @@ class StatsAPI {
             kicked INT DEFAULT 0,
             banned INT DEFAULT 0,
             kills INT DEFAULT 0,
-            wins INT DEFAULT 0
+            wins INT DEFAULT 0,
+            time INT,
+            playtime INT
           );";
         $this->db->query($querycontents);
     }

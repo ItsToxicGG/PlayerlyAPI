@@ -4,7 +4,7 @@ namespace Statics;
 
 use pocketmine\plugin\PluginBase;
 use pocketmine\event\Listener;
-use pocketmine\event\player\PlayerJoinEvent;
+use pocketmine\event\player\{PlayerJoinEvent, PlayerQuitEvent, PlayerKickEvent};
 use Statics\api\StatsAPI;
 use Statics\command\StatsCommand;
 
@@ -19,6 +19,7 @@ class Stats extends PluginBase implements Listener {
         $this->getLogger()->info("Early Beta, pls beware of bugs.");
         $this->getServer()->getPluginManager()->registerEvents($this, $this); 
         $this->getServer()->getCommandMap()->register("stats", new StatsCommand($this));
+        $this->getScheduler()->scheduleRepeatingTask(new SessionTimeTask($this->getStatsAPI()->db), 1200);
         $this->s = new StatsAPI($this);
     }
 
@@ -34,10 +35,55 @@ class Stats extends PluginBase implements Listener {
     $player = $event->getPlayer();
     if(!$this->getStatsAPI()->accountExists(strtolower($player->getName()))){
         $this->getStatsAPI()->db->query("INSERT INTO `stats`
-            (`username`, `xuid`, `breaks`, `places`, `deaths`, `kicked`, `banned`,`kills`,`wins`)
+            (`username`, `xuid`, `breaks`, `places`, `deaths`, `kicked`, `banned`,`kills`,`wins`,`time`, `playtime`)
             VALUES
-            ('".$this->getStatsAPI()->db->escape_string(strtolower($player->getDisplayName()))."', '".$this->getStatsAPI()->db->real_escape_string(strtolower($player->getXuid()))."', '0','0','0','0','0','0','0')
+            ('".$this->getStatsAPI()->db->escape_string(strtolower($player->getDisplayName()))."', '".$this->getStatsAPI()->db->real_escape_string(strtolower($player->getXuid()))."', '0','0','0','0','0','0','0','1','0')
         ");
     } 
+    }
+
+    public function onQuit(PlayerQuitEvent $event){
+        $player = $event->getPlayer();
+        $username = strtolower($player->getName());
+        $sessionTime = $this->getSessionTime($username);
+        $playtime = $this->getPlaytime($player);
+        $this->database->query("UPDATE stats SET playtime = '$playtime' WHERE username = '$username'");
+        $this->database->query("UPDATE stats SET time = $sessionTime WHERE username = '$username'");
+    }
+
+    public function onKick(PlayerKickEvent $event){
+        $player = $event->getPlayer();
+        $username = strtolower($player->getName());
+        $playtime = $this->getPlaytime($player);
+        $this->database->query("UPDATE stats SET playtime = '$playtime' WHERE username = '$username'");
+    }
+
+    public function getSessionTime($username) {
+        $player = $this->getServer()->getPlayerExact($username);
+        if ($player instanceof Player && $player->isOnline()) {
+            $sessionTime = $this->getStatsAPI()->db->query("SELECT time FROM stats WHERE username = '$username'")->fetch_assoc()["time"] + 1;
+        } else {
+            $sessionTime = $this->getStatsAPI()->db->query("SELECT time FROM stats WHERE username = '$username'")->fetch_assoc()["time"];
+        }
+        return $sessionTime;
+    }
+
+    public function getPlaytime(Player $player){
+        $playtime = $player->getPlayerTime();
+        $username = strtolower($player->getName());
+        $result = $this->database->query("SELECT * FROM stats WHERE username = '$username'");
+        if($result->num_rows === 1){
+            $row = $result->fetch_assoc();
+            $playtime += (int) $row["playtime"];
+        }
+
+        return $playtime;
+    }
+
+    public function formatTime($time) {
+        $hours = floor($time / 3600);
+        $minutes = floor(($time / 60) % 60);
+        $seconds = $time % 60;
+        return "$hours:$minutes:$seconds";
     }
 }

@@ -73,7 +73,7 @@ class Stats extends PluginBase implements Listener {
     public function getPlaytime(Player $player){
         $username = strtolower($player->getName());
         $result = $this->getStatsAPI()->db->query("SELECT * FROM stats WHERE username = '$username'");
-        $playertime = 0;
+        $playtime = 0;
         if($result->num_rows === 1){
             $row = $result->fetch_assoc();
             $playtime += (int) $row["playtime"];

@@ -63,13 +63,8 @@ class Stats extends PluginBase implements Listener {
             $playerName = $player->getName();
             $kills = $this->getStatsAPI()->getKills($player); $wins = $this->getStatsAPI()->getWins($player);
             $deaths = $this->getStatsAPI()->getDeaths($player);
-            $form = new SimpleForm(function (Player $player, $data) {
-                if($data === null) {
-                    return;
-                }
-            });
-            $form->setTitle("$playerName Stats");
             $txt = 
+            " Name: $playerName\n".
             " Level: Soon\n".
             " Xp: Soon\n".
             " Rank: Soon\n\n".
@@ -83,10 +78,7 @@ class Stats extends PluginBase implements Listener {
             " Kicked: Soon\n".
             " Muted: Soon\n"
             ;
-            $form->setContent($txt);
-            $form->addButton("Exit");
-            $form->sendToPlayer($sender);
-            return true;
+            $player->sendMessage($txt);
         }
         return false;
     }

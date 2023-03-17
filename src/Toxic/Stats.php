@@ -14,6 +14,7 @@ use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\command\ConsoleCommandSender;
 use pocketmine\command\PluginCommand;
+use pocketmine\utils\TextFormat;
 
 class Stats extends PluginBase implements Listener {
 
@@ -48,7 +49,7 @@ class Stats extends PluginBase implements Listener {
                 }
                 $player = $sender;
             } else {
-                $player = $this->getServer()->getPlayer($args[0]);
+                $player = $this->getServer()->getPlayerExact($args[0]);
                 if(!$player instanceof Player) {
                     $sender->sendMessage("The player by the name of {$args[0]} was not found.");
                     return true;
@@ -163,7 +164,7 @@ class Stats extends PluginBase implements Listener {
     public function onPlayerChat(PlayerChatEvent $event){
         $player = $event->getPlayer();
         $username = $player->getName();
-        $result = $this->mysqli->query("SELECT * FROM mutes WHERE username = '" . $username . "' AND mutetime > " . time());
+        $result = $this->getMuteAPI()->db->query("SELECT * FROM mutes WHERE username = '" . $username . "' AND mutetime > " . time());
         if($result->num_rows > 0){
             $event->cancel();
             $row = $result->fetch_assoc();

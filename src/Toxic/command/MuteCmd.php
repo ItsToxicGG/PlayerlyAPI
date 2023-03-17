@@ -40,7 +40,7 @@ class MuteCmd extends Command implements PluginOwned {
                 $sender->sendMessage(TextFormat::RED . "Usage: /mute <player> <time> [reason]");
                 return true;
             }
-            $player = $this->plugin->getServer()->getPlayer($args[0]);
+            $player = $this->plugin->getServer()->getPlayerExact($args[0]);
             if($player === null){
                 $sender->sendMessage(TextFormat::RED . "Player not found.");
                 return true;

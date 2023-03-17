@@ -11,7 +11,7 @@ commands:
     aliases: [profile, user]
     permission: stats.command
  
-permission:
+permissions:
   stats.command:
     default: true
   unmute.command:

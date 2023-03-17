@@ -6,7 +6,7 @@ author: Toxic
 main: Toxic\Stats
 
 commands:
-  murdermystery:
+  stats:
     description: "Check your stats or another players"
     aliases: [profile, user]
     permission: "stats.command"

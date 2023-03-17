@@ -79,7 +79,7 @@ class Stats extends PluginBase implements Listener {
             " Muted: Soon\n"
             ;
             $form->setContent($txt);
-            $form->setButton("Exit");
+            $form->addButton("Exit");
             $form->sendToPlayer($sender);
             return true;
         }

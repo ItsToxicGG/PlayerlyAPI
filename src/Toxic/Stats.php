@@ -27,6 +27,14 @@ class Stats extends PluginBase implements Listener {
     /** @var MuteAPI $m */
     private $m;
 
+    /** @var \mysqli $db */
+    private $db;
+
+    public function onLoad(): void{
+        $config = $this->getConfig()->get("mysql-settings");
+        $this->db = new mysqli($config['host'], $config['user'], $config['password'], $config['database']);
+    }
+
     public function onEnable(): void{
         $this->getLogger()->info("PlayerlyAPI");
         $this->getLogger()->info("Warning: Earlier Beta");
@@ -34,7 +42,7 @@ class Stats extends PluginBase implements Listener {
         $this->getServer()->getPluginManager()->registerEvents($this, $this); 
         $this->getServer()->getCommandMap()->register("mute", new MuteCmd($this));
         $this->getServer()->getCommandMap()->register("unmute", new UnMuteCmd($this));
-        $this->getScheduler()->scheduleRepeatingTask(new SessionTimeTask($this->getStatsAPI()->db), 1200);
+        $this->getScheduler()->scheduleRepeatingTask(new SessionTimeTask($this->db), 1200);
         $this->s = new StatsAPI($this);
         $this->m = new MuteAPI($this);
         $this->b = new BanAPI($this);

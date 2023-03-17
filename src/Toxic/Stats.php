@@ -1,6 +1,6 @@
 <?php
 
-namespace Statics;
+namespace Toxic;
 
 use pocketmine\plugin\PluginBase;
 use pocketmine\event\Listener;

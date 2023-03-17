@@ -4,7 +4,7 @@ namespace Toxic\api;
 
 use pocketmine\player\Player;
 use pocketmine\utils\Config;
-use Statics\Stats;
+use Toxic\Stats;
 use mysqli;
 
 class MuteAPI {

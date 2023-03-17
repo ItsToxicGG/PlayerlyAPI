@@ -1,6 +1,6 @@
 <?php
 
-namespace Statics\task;
+namespace Toxic\task;
 
 use pocketmine\scheduler\Task;
 use pocketmine\player\Player;

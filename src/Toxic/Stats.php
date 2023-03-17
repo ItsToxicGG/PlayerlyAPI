@@ -36,9 +36,6 @@ class Stats extends PluginBase implements Listener {
     }
 
     public function onEnable(): void{
-        $this->getLogger()->info("PlayerlyAPI");
-        $this->getLogger()->info("Warning: Earlier Beta");
-        $this->getLogger()->info("Early Beta, pls beware of bugs.");
         $this->getServer()->getPluginManager()->registerEvents($this, $this); 
         $this->getServer()->getCommandMap()->register("mute", new MuteCmd($this));
         $this->getServer()->getCommandMap()->register("unmute", new UnMuteCmd($this));
@@ -104,10 +101,6 @@ class Stats extends PluginBase implements Listener {
 
     public function getBanAPI(){
         return $this->b;
-    }
-
-    public function onLoad(): void{
-        $this->getLogger()->notice("This Project is in earlier beta, pls beware of problems!");
     }
 
     public function onJoin(PlayerJoinEvent $event){

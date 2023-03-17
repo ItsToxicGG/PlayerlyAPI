@@ -5,9 +5,10 @@ namespace Statics;
 use pocketmine\plugin\PluginBase;
 use pocketmine\event\Listener;
 use pocketmine\event\player\{PlayerJoinEvent, PlayerQuitEvent, PlayerKickEvent};
-use Statics\api\StatsAPI;
-use Statics\task\SessionTimeTask;
-use Statics\command\StatsCommand;
+use Toxic\api\{StatsAPI, MuteAPI, BanAPI};
+use Toxic\task\SessionTimeTask;
+use Toxic\command\{MuteCmd, UnMuteCmd};
+use Vecnavium\FormsUI\SimpleForm;
 use pocketmine\player\Player;
 
 class Stats extends PluginBase implements Listener {
@@ -20,13 +21,70 @@ class Stats extends PluginBase implements Listener {
         $this->getLogger()->info("Warning: Earlier Beta");
         $this->getLogger()->info("Early Beta, pls beware of bugs.");
         $this->getServer()->getPluginManager()->registerEvents($this, $this); 
-        $this->getServer()->getCommandMap()->register("stats", new StatsCommand($this));
+        $this->getServer()->getCommandMap()->register("mute", new MuteCommand($this));
+        $this->getServer()->getCommandMap()->register("unmute", new UnMuteCommand($this));
         $this->getScheduler()->scheduleRepeatingTask(new SessionTimeTask($this->getStatsAPI()->db), 1200);
         $this->s = new StatsAPI($this);
+        $this->m = new MuteAPI($this);
+        $this->b = new BanAPI($this);
+    }
+
+    public function onCommand(CommandSender $sender, Command $command, string $label, array $args): bool {
+        if(strtolower($command->getName()) === "stats") {
+            if(!isset($args[0])) {
+                if(!$sender instanceof Player) {
+                    $sender->sendMessage("Please specify a player.");
+                    return true;
+                }
+                $player = $sender;
+            } else {
+                $player = $this->getServer()->getPlayer($args[0]);
+                if(!$player instanceof Player) {
+                    $sender->sendMessage("The player by the name of {$args[0]} was not found.");
+                    return true;
+                }
+            }
+            $playerName = $player->getName();
+            $kills = $this->getStatsAPI()->getKills($player); $wins = $this->getStatsAPI()->getWins($player);
+            $deaths = $this->getStatsAPI()->getDeaths($player);
+            $form = new SimpleForm(function (Player $player, $data) {
+                if($data === null) {
+                    return;
+                }
+            });
+            $form->setTitle("$playerName Stats");
+            $txt = 
+            " Level: Soon\n".
+            " Xp: Soon\n".
+            " Rank: Soon\n\n".
+            " Coins: Soon\n".
+            " Points: Soon\n\n".
+            " Kills: $kills\n".
+            " Wins: $wins\n".
+            " Deaths: $deaths\n".
+            " KDR: Soon\n\n".
+            " Banned: Soon\n".
+            " Kicked: Soon\n".
+            " Muted: Soon\n"
+            ;
+            $form->setContent($txt);
+            $form->setButton("Exit");
+            $form->sendToPlayer($sender);
+            return true;
+        }
+        return false;
     }
 
     public function getStatsAPI(){
         return $this->s;
+    }
+
+    public function getMuteAPI(){
+        return $this->m;
+    }
+
+    public function getBanAPI(){
+        return $this->b;
     }
 
     public function onLoad(): void{

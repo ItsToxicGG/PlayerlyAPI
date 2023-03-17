@@ -1,6 +1,6 @@
 <?php
 
-namespace Statics\api;
+namespace Toxic\api;
 
 use pocketmine\player\Player;
 use pocketmine\utils\Config;
@@ -27,8 +27,6 @@ class StatsAPI {
             breaks INT DEFAULT 0,
             places INT DEFAULT 0,
             deaths INT DEFAULT 0,
-            kicked INT DEFAULT 0,
-            banned INT DEFAULT 0,
             kills INT DEFAULT 0,
             wins INT DEFAULT 0,
             time INT,

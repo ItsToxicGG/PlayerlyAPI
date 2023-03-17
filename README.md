@@ -1,5 +1,14 @@
 # PlayerlyAPI
 request anything that should be implemented in PlayerlyAPI
+# Todo-List
+- [ ] Ban-System
+- [X] Mute-System
+- [X] StatsAPI
+- [ ] Level-System
+- [ ] Rank-System
+- [ ] Coins-System
+- [ ] Points-System
+- [X] Mysql
 # Config
 enter the mysql data in config.yml
 # How to Use the api

@@ -3,4 +3,18 @@ description: playerly api for stats
 version: 1.0
 api: 4.0.0 # 5.0.0 soon!
 author: Toxic
-main: Statics\Stats
+main: Toxic\Stats
+
+commands:
+  murdermystery:
+    description: "Check your stats or another players"
+    aliases: [profile, user]
+    permission: "stats.command"
+
+permission:
+  stats.command:
+    default: true
+  unmute.command:
+    default: op
+  mute.command:
+    default: op

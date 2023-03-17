@@ -101,11 +101,11 @@ class Stats extends PluginBase implements Listener {
     if(!$this->getStatsAPI()->accountExists(strtolower($player->getName()))){
         if(!$player->hasPlayedBefore()){
         $this->getStatsAPI()->db->query("INSERT INTO `stats`
-            (`username`, `uuid`, `xuid`, `breaks`, `places`, `deaths`, `kicked`, `banned`,`kills`,`wins`,`time`, `playtime`, `joined`)
+            (`username`, `uuid`, `xuid`, `breaks`, `places`, `deaths`,`kills`,`wins`,`time`, `playtime`, `joined`)
             VALUES
-            ('".$this->getStatsAPI()->db->escape_string(strtolower($player->getDisplayName()))."', '".$this->getStatsAPI()->db->real_escape_string(strtolower($player->getUniqueId()))."', '".$this->getStatsAPI()->db->real_escape_string(strtolower($player->getXuid()))."', '0','0','0','0','0','0','0','1','0', '$date')
+            ('".$this->getStatsAPI()->db->escape_string(strtolower($player->getDisplayName()))."', '".$this->getStatsAPI()->db->real_escape_string(strtolower($player->getUniqueId()))."', '".$this->getStatsAPI()->db->real_escape_string(strtolower($player->getXuid()))."', '0','0','0','0','0','1','0', '$date')
         ");
-        $player->sendMessage("Welcome to the {$this->getConfig()->get("servername")} for the first time!");
+        $player->sendMessage("Welcome to the server for the first time!");
         }
     } 
     }

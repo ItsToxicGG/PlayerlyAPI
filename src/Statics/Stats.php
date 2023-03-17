@@ -6,7 +6,9 @@ use pocketmine\plugin\PluginBase;
 use pocketmine\event\Listener;
 use pocketmine\event\player\{PlayerJoinEvent, PlayerQuitEvent, PlayerKickEvent};
 use Statics\api\StatsAPI;
+use Statics\task\SessionTimeTask;
 use Statics\command\StatsCommand;
+use pocketmine\player\Player;
 
 class Stats extends PluginBase implements Listener {
 
@@ -47,15 +49,15 @@ class Stats extends PluginBase implements Listener {
         $username = strtolower($player->getName());
         $sessionTime = $this->getSessionTime($username);
         $playtime = $this->getPlaytime($player);
-        $this->database->query("UPDATE stats SET playtime = '$playtime' WHERE username = '$username'");
-        $this->database->query("UPDATE stats SET time = $sessionTime WHERE username = '$username'");
+        $this->getStatsAPI()->db->query("UPDATE stats SET playtime = '$playtime' WHERE username = '$username'");
+        $this->getStatsAPI()->db->query("UPDATE stats SET time = $sessionTime WHERE username = '$username'");
     }
 
     public function onKick(PlayerKickEvent $event){
         $player = $event->getPlayer();
         $username = strtolower($player->getName());
         $playtime = $this->getPlaytime($player);
-        $this->database->query("UPDATE stats SET playtime = '$playtime' WHERE username = '$username'");
+        $this->getStatsAPI()->db->query("UPDATE stats SET playtime = '$playtime' WHERE username = '$username'");
     }
 
     public function getSessionTime($username) {
@@ -71,12 +73,11 @@ class Stats extends PluginBase implements Listener {
     public function getPlaytime(Player $player){
         $playtime = $player->getPlayerTime();
         $username = strtolower($player->getName());
-        $result = $this->database->query("SELECT * FROM stats WHERE username = '$username'");
+        $result = $this->getStatsAPI()->db->query("SELECT * FROM stats WHERE username = '$username'");
         if($result->num_rows === 1){
             $row = $result->fetch_assoc();
             $playtime += (int) $row["playtime"];
         }
-
         return $playtime;
     }
 

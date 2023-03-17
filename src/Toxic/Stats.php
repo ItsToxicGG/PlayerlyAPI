@@ -52,17 +52,19 @@ class Stats extends PluginBase implements Listener {
                     $sender->sendMessage("Please specify a player.");
                     return true;
                 }
-                $player = $sender;
+                $playerName = $sender->getName();
             } else {
-                $player = $this->getServer()->getPlayerExact($args[0]);
-                if(!$player instanceof Player) {
-                    $sender->sendMessage("The player by the name of {$args[0]} was not found.");
-                    return true;
-                }
+                $playerName = $args[0];
             }
+            $result = "SELECT * FROM stats WHERE username = $playerName";
+            if($result->num_rows === 0) {
+                $sender->sendMessage("Stats not found for $playerName.");
+                return true;
+            }
+            $row = $result->fetch_assoc();
             $playerName = $player->getName();
-            $kills = $this->getStatsAPI()->getKills($player); $wins = $this->getStatsAPI()->getWins($player);
-            $deaths = $this->getStatsAPI()->getDeaths($player);
+            $kills = $row['kills']; $wins = $row['wins'];
+            $deaths = $row['deaths'];
             $txt = 
             " Name: $playerName\n".
             " Level: Soon\n".

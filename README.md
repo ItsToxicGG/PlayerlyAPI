@@ -1,7 +1,7 @@
 # PlayerlyAPI
 request anything that should be implemented in PlayerlyAPI
 # Todo-List
-- [ ] Auth-System
+- [X] Auth-System [BETA]
 - [ ] Ban-System
 - [X] Mute-System
 - [X] StatsAPI

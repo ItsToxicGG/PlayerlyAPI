@@ -2,6 +2,22 @@
 
 namespace Toxic;
 
+/**
+ *    Copyright 2023 @ ItsToxicGG
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
 use mysqli;
 use pocketmine\plugin\PluginBase;
 use pocketmine\event\Listener;
@@ -9,17 +25,17 @@ use pocketmine\event\player\{PlayerJoinEvent, PlayerQuitEvent, PlayerKickEvent, 
 use Toxic\api\{StatsAPI, MuteAPI, BanAPI};
 use Toxic\task\SessionTimeTask;
 use Toxic\command\{MuteCmd, UnMuteCmd};
-use Vecnavium\FormsUI\SimpleForm;
 use pocketmine\player\Player;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\command\ConsoleCommandSender;
 use pocketmine\command\PluginCommand;
 use pocketmine\utils\TextFormat;
+use libs\FormsUI\forms\Vecnavium\FormsUI\SimpleForm;
 
 class Stats extends PluginBase implements Listener {
 
-    /** @var StatsAPI $s */
+    /** @var StatsAPI $s */ 
     private StatsAPI $s;
 
     /** @var BanAPI $b */
@@ -30,6 +46,8 @@ class Stats extends PluginBase implements Listener {
 
     /** @var mysqli $db */
     private mysqli $db;
+
+    private $loggedIn = [];
 
     public function onLoad(): void{
         $config = $this->getConfig()->get("mysql-settings");
@@ -104,6 +122,75 @@ class Stats extends PluginBase implements Listener {
         return $this->b;
     }
 
+    public function loginForm($player){
+        $form = new SimpleForm(function(Player $player, $data) {
+            if ($data === null) {
+                // Player closed the form
+                return;
+            }
+
+            // Check if username and password are correct
+            $username = $data[0];
+            $password = $data[1];
+            $stmt = $this->db->prepare("SELECT * FROM stats WHERE username = ?");
+            $stmt->bind_param("s", $username);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $row = $result->fetch_assoc();
+            if ($row && password_verify($password, $row["password"])) {
+                // Login successful
+                $this->setLoggedIn($player, true);
+                $player->sendMessage("Welcome back, " . $row["username"] . "!");
+            } else {
+                // Login failed
+                $player->sendMessage("Incorrect username or password");
+            }
+        });
+
+        $form->setTitle("Login");
+        $form->addInput("Username", "Enter your Username here");
+        $form->addInput("Password", "Enter your password here");
+        $form->sendToPlayer($player);
+    }
+
+    public function registerForm($player){
+        $form = new SimpleForm(function(Player $player, $data) {
+            if ($data === null) {
+                // Player closed the form
+                return;
+            }
+
+            // Insert new user into database
+            $username = $data[0];
+            $password = password_hash($data[1], PASSWORD_DEFAULT);
+            $stmt = $this->db->prepare("INSERT INTO stats (name, password) VALUES (?, ?)");
+            $stmt->bind_param("ss", $username, $password);
+            $stmt->execute();
+            if ($stmt->affected_rows > 0) {
+                // Registration successful
+                $this->setLoggedIn($player, true);
+                $player->sendMessage("Account created successfully");
+            } else {
+                // Registration failed
+                $player->sendMessage("Failed to create account");
+            }
+        });
+
+        $form->setTitle("Register");
+        $form->addInput("Username", "Enter your username here");
+        $form->addInput("Password", "Enter your password here");
+        $form->sendFormToPlayer($form);
+    }
+
+    private function setLoggedIn(Player $player, $loggedIn){
+        $username = $player->getName();
+        if($loggedIn) {
+            $this->loggedIn[$username] = true;
+        } else {
+            unset($this->loggedIn[$username]);
+        }
+    }
+
     public function onJoin(PlayerJoinEvent $event){
     $player = $event->getPlayer();
     $date = date("Y-m-d H:i:s");
@@ -117,6 +204,21 @@ class Stats extends PluginBase implements Listener {
         $player->sendMessage("Welcome to the server for the first time!");
         }
     } 
+    if (isset($this->loggedIn[$username])) {
+        return;
+    }
+    $stmt = $this->db->prepare("SELECT * FROM stats WHERE username = ?");
+    $stmt->bind_param("s", $username);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+    if ($row) {
+        // Player is registered, show login form
+        $this->loginForm($player);
+    } else {
+        // Player is not registered, show registration form
+        $this->registerForm($player);
+    }
     }
 
     public function onQuit(PlayerQuitEvent $event){

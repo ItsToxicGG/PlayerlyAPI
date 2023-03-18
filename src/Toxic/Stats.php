@@ -56,8 +56,8 @@ class Stats extends PluginBase implements Listener {
             } else {
                 $playerName = strtolower($args[0]);
             }
-            $result = "SELECT * FROM stats WHERE username = '?'";
-            $stmt = $this->database->prepare($query);
+            $query = "SELECT * FROM stats WHERE username = '?'";
+            $stmt = $this->getStatsAPI()->db->prepare($query);
             $stmt->bind_param("s", $playerName);
             $stmt->execute();
             $result = $stmt->get_result();

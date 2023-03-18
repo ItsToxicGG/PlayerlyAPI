@@ -43,12 +43,12 @@ class UnMuteCmd extends Command implements PluginOwned {
         
         parent::__construct("unmute", 'UnMute an player!', null, ["uncancelchat"]);
         $this->setAliases(["uncancelchat"]);
-        $this->setPermission("unmute.command");
+        $this->setPermission("toxic.unmute.command");
     }
     
     public function execute(CommandSender $sender, string $commandLabel, array $args): bool {       
         if($sender instanceof Player){
-            if(!$sender->hasPermission("unmute.command")){
+            if(!$sender->hasPermission("toxic.unmute.command")){
                 $sender->sendMessage(TextFormat::RED . "You don't have permission to use this command.");
                 return true;
             }

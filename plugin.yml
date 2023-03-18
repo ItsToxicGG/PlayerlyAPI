@@ -9,12 +9,12 @@ commands:
   stats:
     description: "Check your stats or another players"
     aliases: [profile, user]
-    permission: stats.command
+    permission: toxic.stats.command
  
 permissions:
-  stats.command:
+  toxic.stats.command:
     default: true
-  unmute.command:
+  toxic.unmute.command:
     default: op
-  mute.command:
+  toxic.mute.command:
     default: op

@@ -56,11 +56,13 @@ class Stats extends PluginBase implements Listener {
 
     public function onEnable(): void{
         $this->getServer()->getPluginManager()->registerEvents($this, $this); 
+        if($this->getConfig()->get("mute-system") === true){
         $this->getServer()->getCommandMap()->register("mute", new MuteCmd($this));
         $this->getServer()->getCommandMap()->register("unmute", new UnMuteCmd($this));
+        $this->m = new MuteAPI($this);
+        }
         $this->getScheduler()->scheduleRepeatingTask(new SessionTimeTask($this->db), 1200);
         $this->s = new StatsAPI($this);
-        $this->m = new MuteAPI($this);
         $this->b = new BanAPI($this);
     }
 

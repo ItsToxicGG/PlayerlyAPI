@@ -43,12 +43,12 @@ class MuteCmd extends Command implements PluginOwned {
         
         parent::__construct("mute", 'Mute an player!', null, ["cancelchat"]);
         $this->setAliases(["cancelchat"]);
-        $this->setPermission("mute.command");
+        $this->setPermission("toxic.mute.command");
     }
     
     public function execute(CommandSender $sender, string $commandLabel, array $args): bool {       
         if($sender instanceof Player){
-            if(!$sender->hasPermission("mute.command")){
+            if(!$sender->hasPermission("toxic.mute.command")){
                 $sender->sendMessage(TextFormat::RED . "You don't have permission to use this command.");
                 return true;
             }

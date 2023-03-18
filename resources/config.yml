@@ -3,5 +3,7 @@ mysql-settings:
    user: root
    password: # can be a password or not
    database: players
+   port: 3306
 
 auth-system: false
+mute-system: true

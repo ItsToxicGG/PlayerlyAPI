@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace Vecnavium\FormsUI;
+namespace lib\FormsUI\forms\Vecnavium\FormsUI;
 
 class ModalForm extends Form {
 

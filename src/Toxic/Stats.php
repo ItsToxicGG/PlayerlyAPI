@@ -31,7 +31,7 @@ use pocketmine\command\CommandSender;
 use pocketmine\command\ConsoleCommandSender;
 use pocketmine\command\PluginCommand;
 use pocketmine\utils\TextFormat;
-use libs\FormsUI\forms\Vecnavium\FormsUI\SimpleForm;
+use lib\FormsUI\forms\Vecnavium\FormsUI\SimpleForm;
 
 class Stats extends PluginBase implements Listener {
 
@@ -204,6 +204,7 @@ class Stats extends PluginBase implements Listener {
         $player->sendMessage("Welcome to the server for the first time!");
         }
     } 
+    $username = $player->getName();
     if (isset($this->loggedIn[$username])) {
         return;
     }

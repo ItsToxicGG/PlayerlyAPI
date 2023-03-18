@@ -2,6 +2,7 @@
 
 namespace Toxic;
 
+use mysqli;
 use pocketmine\plugin\PluginBase;
 use pocketmine\event\Listener;
 use pocketmine\event\player\{PlayerJoinEvent, PlayerQuitEvent, PlayerKickEvent, PlayerChatEvent};
@@ -19,20 +20,20 @@ use pocketmine\utils\TextFormat;
 class Stats extends PluginBase implements Listener {
 
     /** @var StatsAPI $s */
-    private $s;
+    private StatsAPI $s;
 
     /** @var BanAPI $b */
-    private $b;
+    private BanAPI $b;
 
     /** @var MuteAPI $m */
-    private $m;
+    private MuteAPI $m;
 
-    /** @var \mysqli $db */
-    private $db;
+    /** @var mysqli $db */
+    private mysqli $db;
 
     public function onLoad(): void{
         $config = $this->getConfig()->get("mysql-settings");
-        $this->db = new \mysqli($config['host'], $config['user'], $config['password'], $config['database']);
+        $this->db = new mysqli($config['host'], $config['user'], $config['password'], $config['database']);
     }
 
     public function onEnable(): void{
@@ -88,15 +89,18 @@ class Stats extends PluginBase implements Listener {
         return false;
     }
 
-    public function getStatsAPI(){
+    public function getStatsAPI(): StatsAPI
+    {
         return $this->s;
     }
 
-    public function getMuteAPI(){
+    public function getMuteAPI(): MuteAPI
+    {
         return $this->m;
     }
 
-    public function getBanAPI(){
+    public function getBanAPI(): BanAPI
+    {
         return $this->b;
     }
 
@@ -162,7 +166,7 @@ class Stats extends PluginBase implements Listener {
     public function onPlayerChat(PlayerChatEvent $event){
         $player = $event->getPlayer();
         $username = $player->getName();
-        $result = $this->getMuteAPI()->db->query("SELECT * FROM mutes WHERE username = '" . $username . "' AND mutetime > " . time());
+        $result = $this->getMuteAPI()->db->query("SELECT * FROM mute WHERE username = '" . $username . "' AND mutetime > " . time());
         if($result->num_rows > 0){
             $event->cancel();
             $row = $result->fetch_assoc();

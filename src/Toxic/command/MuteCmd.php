@@ -14,7 +14,7 @@ use pocketmine\plugin\PluginOwned;
 
 use pocketmine\utils\TextFormat;
 
-use pocketmine\form\forms\SimpleForm;
+//use pocketmine\form\forms\SimpleForm;
 
 use Toxic\Stats;
 

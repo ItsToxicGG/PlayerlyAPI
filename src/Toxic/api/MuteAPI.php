@@ -34,15 +34,18 @@ class MuteAPI {
      * @param string $name
      * @return bool
      */
-    public function MuteExistsFromPlayer(string $name){
+    public function MuteExistsFromPlayer(string $name): bool
+    {
 		$result = $this->db->query("SELECT * FROM mute WHERE username='".$this->db->real_escape_string($name)."'");
-		return $result->num_rows > 0 ? true:false;
+		return $result->num_rows > 0;
 	}
 
-  /**
-   * @param Player $player
-   * @return bool
-   */
+    /**
+     * @param Player $player
+     * @param string $reason
+     * @param int $t
+     * @return bool
+     */
   public function addMuteToPlayer(Player $player, string $reason, int $t): bool{
     $time = strtotime($t);
     $this->db->query("INSERT INTO mutes (player, mutetime, reason) VALUES ('" . $player->getName() . "', " . $time . ", '" . $this->db->real_escape_string($reason) . "')");
@@ -57,4 +60,8 @@ class MuteAPI {
 		if($this->db->query("DELETE FROM mute WHERE username='".$this->db->real_escape_string(strtolower($player->getName()))."'") === true) return true;
 		return false;
 	}
+
+    public function query(string $string)
+    {
+    }
 }

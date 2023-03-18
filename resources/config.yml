@@ -1,5 +1,5 @@
 mysql-settings:
-   host: Example
-   user: Example
+   host: localhost
+   user: root
    password: # can be a password or not
-   database: Example 
+   database: players

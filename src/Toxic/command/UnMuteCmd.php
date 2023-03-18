@@ -20,7 +20,7 @@ use Toxic\Stats;
 
 class UnMuteCmd extends Command implements PluginOwned {
     
-    private $plugin;
+    private Stats $plugin;
     
     public function __construct(Stats $plugin){
         $this->plugin = $plugin; 
@@ -42,10 +42,10 @@ class UnMuteCmd extends Command implements PluginOwned {
             }
             $player = $this->plugin->getServer()->getPlayerExact($args[0]);
             if($player === null){
-                $sender->sendMessage(TextFormat::RED . "The player {$args[0]} was not found.");
+                $sender->sendMessage(TextFormat::RED . "The player $args[0] was not found.");
                 return true;
             }
-            $this->plugin->getMuteAPI()->query("DELETE FROM mutes WHERE username = '" . $player->getName() . "'");
+            $this->plugin->getMuteAPI()->query("DELETE FROM mute WHERE username = '" . $player->getName() . "'");
             $sender->sendMessage(TextFormat::GREEN . "Player " . $player->getName() . " has been unmuted.");
             $player->sendMessage(TextFormat::GREEN . "You have been unmuted.");
             return true;

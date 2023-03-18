@@ -2,6 +2,22 @@
 
 namespace Toxic\api;
 
+/**
+ *    Copyright 2023 @ ItsToxicGG
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
 use pocketmine\player\Player;
 use pocketmine\utils\Config;
 use Toxic\Stats;
@@ -20,10 +36,15 @@ class StatsAPI {
         if($this->db->connect_error){
             die("Connection Failed" . $this->db->connect_error);
         }
+        // username & name is two different things unless the player sets the name in the
+        // authh system if auth system on config is set to
+        // true in config, but the name is selected by the player however the username is the players
+        // name and cant be choosen but once join they username is set
         $querycontents = "CREATE TABLE IF NOT EXISTS stats (
             username VARCHAR(255) PRIMARY KEY,
             uuid VARCHAR(255), 
             xuid VARCHAR(50),
+            name VARCHAR(50),
             breaks INT DEFAULT 0,
             places INT DEFAULT 0,
             deaths INT DEFAULT 0,
@@ -31,7 +52,8 @@ class StatsAPI {
             wins INT DEFAULT 0,
             time INT,
             playtime INT,
-            joined DATETIME
+            joined DATETIME,
+            password TEXT,
           );";
         $this->db->query($querycontents);
     }
@@ -113,31 +135,7 @@ class StatsAPI {
 		$res->free();
 		return $ret;
     }
-
-        /**
-     * @param Player $player
-     * @return null|int
-     */
-    public function getKicks(Player $player){
-		$name = trim(strtolower($player->getName()));
-		$res = $this->db->query("SELECT kicked FROM stats WHERE username='".$this->db->real_escape_string($name)."'");
-		$ret = $res->fetch_array()[0] ?? false;
-		$res->free();
-		return $ret;
-    }
-
-       /**
-     * @param Player $player
-     * @return null|int
-     */
-    public function getBans(Player $player){
-		$name = trim(strtolower($player->getName()));
-		$res = $this->db->query("SELECT banned FROM stats WHERE username='".$this->db->real_escape_string($name)."'");
-		$ret = $res->fetch_array()[0] ?? false;
-		$res->free();
-		return $ret;
-    } 
-
+    
     // adding
 
     public function addKills(Player $player, int $amount){

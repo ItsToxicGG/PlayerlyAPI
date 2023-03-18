@@ -4,6 +4,22 @@ declare(strict_types=1);
 
 namespace Toxic\command;
 
+/**
+ *    Copyright 2023 @ ItsToxicGG
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
 use pocketmine\Server;
 use pocketmine\player\Player;
 
@@ -20,7 +36,7 @@ use Toxic\Stats;
 
 class UnMuteCmd extends Command implements PluginOwned {
     
-    private $plugin;
+    private Stats $plugin;
     
     public function __construct(Stats $plugin){
         $this->plugin = $plugin; 
@@ -42,10 +58,10 @@ class UnMuteCmd extends Command implements PluginOwned {
             }
             $player = $this->plugin->getServer()->getPlayerExact($args[0]);
             if($player === null){
-                $sender->sendMessage(TextFormat::RED . "The player {$args[0]} was not found.");
+                $sender->sendMessage(TextFormat::RED . "The player $args[0] was not found.");
                 return true;
             }
-            $this->plugin->getMuteAPI()->query("DELETE FROM mutes WHERE username = '" . $player->getName() . "'");
+            $this->plugin->getMuteAPI()->query("DELETE FROM mute WHERE username = '" . $player->getName() . "'");
             $sender->sendMessage(TextFormat::GREEN . "Player " . $player->getName() . " has been unmuted.");
             $player->sendMessage(TextFormat::GREEN . "You have been unmuted.");
             return true;

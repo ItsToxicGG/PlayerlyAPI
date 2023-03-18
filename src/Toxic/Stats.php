@@ -2,37 +2,56 @@
 
 namespace Toxic;
 
+/**
+ *    Copyright 2023 @ ItsToxicGG
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
+use mysqli;
 use pocketmine\plugin\PluginBase;
 use pocketmine\event\Listener;
 use pocketmine\event\player\{PlayerJoinEvent, PlayerQuitEvent, PlayerKickEvent, PlayerChatEvent};
 use Toxic\api\{StatsAPI, MuteAPI, BanAPI};
 use Toxic\task\SessionTimeTask;
 use Toxic\command\{MuteCmd, UnMuteCmd};
-use Vecnavium\FormsUI\SimpleForm;
 use pocketmine\player\Player;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\command\ConsoleCommandSender;
 use pocketmine\command\PluginCommand;
 use pocketmine\utils\TextFormat;
+use lib\FormsUI\forms\Vecnavium\FormsUI\CustomForm;
 
 class Stats extends PluginBase implements Listener {
 
-    /** @var StatsAPI $s */
-    private $s;
+    /** @var StatsAPI $s */ 
+    private StatsAPI $s;
 
     /** @var BanAPI $b */
-    private $b;
+    private BanAPI $b;
 
     /** @var MuteAPI $m */
-    private $m;
+    private MuteAPI $m;
 
-    /** @var \mysqli $db */
-    private $db;
+    /** @var mysqli $db */
+    private mysqli $db;
+
+    private $loggedIn = [];
 
     public function onLoad(): void{
         $config = $this->getConfig()->get("mysql-settings");
-        $this->db = new \mysqli($config['host'], $config['user'], $config['password'], $config['database']);
+        $this->db = new mysqli($config['host'], $config['user'], $config['password'], $config['database']);
     }
 
     public function onEnable(): void{
@@ -88,16 +107,88 @@ class Stats extends PluginBase implements Listener {
         return false;
     }
 
-    public function getStatsAPI(){
+    public function getStatsAPI(): StatsAPI
+    {
         return $this->s;
     }
 
-    public function getMuteAPI(){
+    public function getMuteAPI(): MuteAPI
+    {
         return $this->m;
     }
 
-    public function getBanAPI(){
+    public function getBanAPI(): BanAPI
+    {
         return $this->b;
+    }
+
+    public function loginForm($player){
+        $form = new CustomForm(function(Player $player, $data) {
+            if ($data === null) {
+                // Player closed the form
+                return;
+            }
+
+            // Check if username and password are correct
+            $username = $data[0];
+            $password = $data[1];
+            $stmt = $this->db->prepare("SELECT * FROM stats WHERE username = ?");
+            $stmt->bind_param("s", $username);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $row = $result->fetch_assoc();
+            if ($row && password_verify($password, $row["password"])) {
+                // Login successful
+                $this->setLoggedIn($player, true);
+                $player->sendMessage("Welcome back, " . $row["username"] . "!");
+            } else {
+                // Login failed
+                $player->sendMessage("Incorrect username or password");
+            }
+        });
+
+        $form->setTitle("Login");
+        $form->addInput("Username", "Enter your Username here");
+        $form->addInput("Password", "Enter your password here");
+        $form->sendToPlayer($player);
+    }
+
+    public function registerForm($player){
+        $form = new CustomForm(function(Player $player, $data) {
+            if ($data === null) {
+                // Player closed the form
+                return;
+            }
+
+            // Insert new user into database
+            $username = $data[0];
+            $password = password_hash($data[1], PASSWORD_DEFAULT);
+            $stmt = $this->db->prepare("INSERT INTO stats (name, password) VALUES (?, ?)");
+            $stmt->bind_param("ss", $username, $password);
+            $stmt->execute();
+            if ($stmt->affected_rows > 0) {
+                // Registration successful
+                $this->setLoggedIn($player, true);
+                $player->sendMessage("Account created successfully");
+            } else {
+                // Registration failed
+                $player->sendMessage("Failed to create account");
+            }
+        });
+
+        $form->setTitle("Register");
+        $form->addInput("Username", "Enter your username here");
+        $form->addInput("Password", "Enter your password here");
+        $form->sendToPlayer($player);
+    }
+
+    private function setLoggedIn(Player $player, $loggedIn){
+        $username = $player->getName();
+        if($loggedIn) {
+            $this->loggedIn[$username] = true;
+        } else {
+            unset($this->loggedIn[$username]);
+        }
     }
 
     public function onJoin(PlayerJoinEvent $event){
@@ -113,6 +204,22 @@ class Stats extends PluginBase implements Listener {
         $player->sendMessage("Welcome to the server for the first time!");
         }
     } 
+    $username = $player->getName();
+    if (isset($this->loggedIn[$username])) {
+        return;
+    }
+    $stmt = $this->db->prepare("SELECT * FROM stats WHERE username = ?");
+    $stmt->bind_param("s", $username);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+    if ($row) {
+        // Player is registered, show login form
+        $this->loginForm($player);
+    } else {
+        // Player is not registered, show registration form
+        $this->registerForm($player);
+    }
     }
 
     public function onQuit(PlayerQuitEvent $event){
@@ -134,9 +241,9 @@ class Stats extends PluginBase implements Listener {
     public function getSessionTime($username) {
         $player = $this->getServer()->getPlayerExact($username);
         if ($player instanceof Player && $player->isOnline()) {
-            $sessionTime = $this->getStatsAPI()->db->query("SELECT time FROM stats WHERE username = '$username'")->fetch_assoc()["time"] + 1;
+            $sessionTime = intval($this->getStatsAPI()->db->query("SELECT time FROM stats WHERE username = '$username'")->fetch_assoc()["time"]) + 1;
         } else {
-            $sessionTime = $this->getStatsAPI()->db->query("SELECT time FROM stats WHERE username = '$username'")->fetch_assoc()["time"];
+            $sessionTime = intval($this->getStatsAPI()->db->query("SELECT time FROM stats WHERE username = '$username'")->fetch_assoc()["time"]);
         }
         return $sessionTime;
     }
@@ -162,14 +269,14 @@ class Stats extends PluginBase implements Listener {
     public function onPlayerChat(PlayerChatEvent $event){
         $player = $event->getPlayer();
         $username = $player->getName();
-        $result = $this->getMuteAPI()->db->query("SELECT * FROM mutes WHERE username = '" . $username . "' AND mutetime > " . time());
+        $result = $this->getMuteAPI()->db->query("SELECT * FROM mute WHERE username = '" . $username . "' AND mutetime > " . time());
         if($result->num_rows > 0){
             $event->cancel();
             $row = $result->fetch_assoc();
-            $remainingTime = $row['mutetime'] - time();
+            $remainingTime = intval($row['mutetime']) - time();
             $reason = $row['reason'];
             $player->sendMessage(TextFormat::RED . "You are muted for " . $remainingTime . " seconds. Reason: " . $reason);
-        }
+        }        
     }
 }
 

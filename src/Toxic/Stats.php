@@ -31,7 +31,7 @@ use pocketmine\command\CommandSender;
 use pocketmine\command\ConsoleCommandSender;
 use pocketmine\command\PluginCommand;
 use pocketmine\utils\TextFormat;
-use lib\FormsUI\forms\Vecnavium\FormsUI\SimpleForm;
+use lib\FormsUI\forms\Vecnavium\FormsUI\CustomForm;
 
 class Stats extends PluginBase implements Listener {
 
@@ -123,7 +123,7 @@ class Stats extends PluginBase implements Listener {
     }
 
     public function loginForm($player){
-        $form = new SimpleForm(function(Player $player, $data) {
+        $form = new CustomForm(function(Player $player, $data) {
             if ($data === null) {
                 // Player closed the form
                 return;
@@ -154,7 +154,7 @@ class Stats extends PluginBase implements Listener {
     }
 
     public function registerForm($player){
-        $form = new SimpleForm(function(Player $player, $data) {
+        $form = new CustomForm(function(Player $player, $data) {
             if ($data === null) {
                 // Player closed the form
                 return;
@@ -241,9 +241,9 @@ class Stats extends PluginBase implements Listener {
     public function getSessionTime($username) {
         $player = $this->getServer()->getPlayerExact($username);
         if ($player instanceof Player && $player->isOnline()) {
-            $sessionTime = $this->getStatsAPI()->db->query("SELECT time FROM stats WHERE username = '$username'")->fetch_assoc()["time"] + 1;
+            $sessionTime = intval($this->getStatsAPI()->db->query("SELECT time FROM stats WHERE username = '$username'")->fetch_assoc()["time"]) + 1;
         } else {
-            $sessionTime = $this->getStatsAPI()->db->query("SELECT time FROM stats WHERE username = '$username'")->fetch_assoc()["time"];
+            $sessionTime = intval($this->getStatsAPI()->db->query("SELECT time FROM stats WHERE username = '$username'")->fetch_assoc()["time"]);
         }
         return $sessionTime;
     }
@@ -273,10 +273,10 @@ class Stats extends PluginBase implements Listener {
         if($result->num_rows > 0){
             $event->cancel();
             $row = $result->fetch_assoc();
-            $remainingTime = $row['mutetime'] - time();
+            $remainingTime = intval($row['mutetime']) - time();
             $reason = $row['reason'];
             $player->sendMessage(TextFormat::RED . "You are muted for " . $remainingTime . " seconds. Reason: " . $reason);
-        }
+        }        
     }
 }
 

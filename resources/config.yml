@@ -3,3 +3,5 @@ mysql-settings:
    user: root
    password: # can be a password or not
    database: players
+
+auth-system: false

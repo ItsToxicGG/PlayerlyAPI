@@ -204,6 +204,7 @@ class Stats extends PluginBase implements Listener {
         $player->sendMessage("Welcome to the server for the first time!");
         }
     } 
+    if($this->getConfig()->get("auth-system") === true){
     $username = $player->getName();
     if (isset($this->loggedIn[$username])) {
         return;
@@ -220,6 +221,7 @@ class Stats extends PluginBase implements Listener {
         // Player is not registered, show registration form
         $this->registerForm($player);
     }
+    }  
     }
 
     public function onQuit(PlayerQuitEvent $event){

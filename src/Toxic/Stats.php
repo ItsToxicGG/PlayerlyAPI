@@ -51,7 +51,7 @@ class Stats extends PluginBase implements Listener {
 
     public function onLoad(): void{
         $config = $this->getConfig()->get("mysql-settings");
-        $this->db = new mysqli($config['host'], $config['user'], $config['password'], $config['database']);
+        $this->db = new mysqli($config['host'], $config['user'], $config['password'], $config['database'], $config['port']);
     }
 
     public function onEnable(): void{

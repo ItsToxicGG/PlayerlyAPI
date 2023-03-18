@@ -179,7 +179,7 @@ class Stats extends PluginBase implements Listener {
         $form->setTitle("Register");
         $form->addInput("Username", "Enter your username here");
         $form->addInput("Password", "Enter your password here");
-        $form->sendFormToPlayer($form);
+        $form->sendToPlayer($player);
     }
 
     private function setLoggedIn(Player $player, $loggedIn){

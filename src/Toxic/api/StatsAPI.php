@@ -32,7 +32,7 @@ class StatsAPI {
     public function __construct(Stats $plugin){
         $this->plugin = $plugin;
         $config = $this->plugin->getConfig()->get("mysql-settings");
-        $this->db = new mysqli($config['host'], $config['user'], $config['password'], $config['database']);
+        $this->db = new mysqli($config['host'], $config['user'], $config['password'], $config['database'], $config['port']);
         if($this->db->connect_error){
             die("Connection Failed" . $this->db->connect_error);
         }

@@ -31,7 +31,7 @@ use pocketmine\command\CommandSender;
 use pocketmine\command\ConsoleCommandSender;
 use pocketmine\command\PluginCommand;
 use pocketmine\utils\TextFormat;
-use lib\FormsUI\forms\Vecnavium\FormsUI\CustomForm;
+use lib\FormsUI\forms\Vecnavium\FormsUI\{CustomForm, SimpleForm};
 
 class Stats extends PluginBase implements Listener {
 
@@ -106,7 +106,7 @@ class Stats extends PluginBase implements Listener {
                     return;
                 }
             });
-            $form->setTitle(TF::BOLD . TF::YELLOW . "Stats for $playerName");
+            $form->setTitle("Stats for $playerName");
             $txt = 
             " Name: $playerName\n".
             " Level: Soon\n".
@@ -133,7 +133,7 @@ class Stats extends PluginBase implements Listener {
         if($this->getConfig()->get("ban-system") === true){
         if($this->getBanAPI()->isBanned($playerName)){
             $result = "Yes";
-        } else if($this->getConfig()->get("ban-system") !== true){
+        } else if($this->getConfig()->get("ban-system") === false){
             $result = "Ban System is disabled...";
         } else {
             $result = "No";

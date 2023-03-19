@@ -7,3 +7,5 @@ mysql-settings:
 
 auth-system: false
 mute-system: true
+ban-system: true
+coin-system: false

@@ -36,31 +36,56 @@ class BanAPI {
         if($this->db->connect_error){
             die("Connection Failed" . $this->db->connect_error);
         }
-        $querycontents = "CREATE TABLE IF NOT EXISTS ban (
+        $querycontents = "CREATE TABLE IF NOT EXISTS bans (
             username VARCHAR(255) PRIMARY KEY,
             uuid VARCHAR(255), 
             xuid VARCHAR(50),
-            bantime INT(11),
-            banreason TEXT
+            reason TEXT,
+            expiry_date INT
           );";
         $this->db->query($querycontents);
-    }
+  }
 
-    /**
-     * @param string $name
-     * @return bool
-     */
-    public function banExists(string $name){
-		$result = $this->db->query("SELECT * FROM ban WHERE username='".$this->db->real_escape_string($name)."'");
-		return $result->num_rows > 0 ? true:false;
-	}
+  public function isBanned(string $playerName) : bool {
+    $query = $this->db->prepare("SELECT * FROM bans WHERE `username` = ?");
+    $query->bind_param("s", $playerName);
+    $query->execute();
+    $result = $query->get_result();
+    
+    return $result->num_rows > 0;
+}
 
-    /**
-     * @param Player $player
-     * @return bool
-     */
-    public function removeBan(Player $player) :bool{
-		if($this->db->query("DELETE FROM ban WHERE username='".$this->db->real_escape_string(strtolower($player->getName()))."'") === true) return true;
-		return false;
-	}
+public function banPlayer(string $playerName, string $reason, int $duration) : bool {
+    $query = $this->db->prepare("INSERT INTO bans (`username`, `reason`, `expiry_date`) VALUES (?, ?, NOW() + INTERVAL ? SECOND)");
+    $query->bind_param("ssi", $playerName, $reason, $duration);
+    $query->execute();
+    
+    return $this->db->affected_rows > 0;
+}
+
+public function unbanPlayer(string $playerName) : bool {
+    $query = $this->db->prepare("DELETE FROM bans WHERE `username` = ?");
+    $query->bind_param("s", $playerName);
+    $query->execute();
+    
+    return $this->db->affected_rows > 0;
+}
+
+public function getBanReason(string $playerName) : ?string {
+    $query = $this->db->prepare("SELECT `reason` FROM bans WHERE `username` = ?");
+    $query->bind_param("s", $playerName);
+    $query->execute();
+    $result = $query->get_result();
+    
+    return $result->num_rows > 0 ? $result->fetch_assoc()["reason"] : null;
+}
+
+public function getBanExpiryDate(string $playerName) : ?string {
+    $query = $this->db->prepare("SELECT `expiry_date` FROM bans WHERE `username` = ?");
+    $query->bind_param("s", $playerName);
+    $query->execute();
+    $result = $query->get_result();
+    
+    return $result->num_rows > 0 ? $result->fetch_assoc()["expiry_date"] : null;
+}
 }

@@ -54,6 +54,7 @@ class StatsAPI {
             playtime INT,
             joined DATETIME,
             password TEXT,
+            coins INT DEFAULT 0
           );";
         $this->db->query($querycontents);
     }
@@ -135,6 +136,14 @@ class StatsAPI {
 		$res->free();
 		return $ret;
     }
+
+    public function getCoins(Player $player){
+      $name = trim(strtolower($player->getName()));
+      $res = $this->db->query("SELECT coins FROM stats WHERE username='".$this->db->real_escape_string($name)."'");
+      $ret = $res->fetch_array()[0] ?? false;
+      $res->free();
+      return $ret;     
+    }
     
     // adding
 
@@ -162,6 +171,14 @@ class StatsAPI {
 		return $this->db->query("UPDATE stats SET deaths = $calculate WHERE username='".$this->db->real_escape_string($player)."'");
     }
 
+    public function addCoins(Player $player, int $amount){
+      $calculate = $this->getCoins($player) + $amount;
+      if($player instanceof Player){
+        $player = strtolower($player->getDisplayName());
+      }
+      return $this->db->query("UPDATE stats SET coins = $calculate WHERE username='".$this->db->real_escape_string($player)."'");
+    }    
+
     // kinda useless via removing
 
     public function removeKills(Player $player, int $amount){
@@ -173,7 +190,7 @@ class StatsAPI {
     }
 
     public function removeWins(Player $player, int $amount){
-		$calculate = $this->getWins($player) + $amount;
+		$calculate = $this->getWins($player) - $amount;
 		if($player instanceof Player){
 			$player = strtolower($player->getDisplayName());
 		}
@@ -181,12 +198,20 @@ class StatsAPI {
     }
 
     public function removeDeaths(Player $player, int $amount){
-		$calculate = $this->getDeaths($player) + $amount;
+		$calculate = $this->getDeaths($player) - $amount;
 		if($player instanceof Player){
 			$player = strtolower($player->getDisplayName());
 		}
 		return $this->db->query("UPDATE stats SET deaths = $calculate WHERE username='".$this->db->real_escape_string($player)."'");
     }
+  
+    public function removeCoins(Player $player, int $amount){
+      $calculate = $this->getCoins($player) - $amount;
+      if($player instanceof Player){
+        $player = strtolower($player->getDisplayName());
+      }
+      return $this->db->query("UPDATE stats SET coins = $calculate WHERE username='".$this->db->real_escape_string($player)."'");
+    }   
 
     // pointless only if you wanna simp and give sum girl like 10000 kills or whatever or something
     
@@ -210,4 +235,17 @@ class StatsAPI {
 		}
 		return $this->db->query("UPDATE stats SET deaths = $amount WHERE username='".$this->db->real_escape_string($player)."'");
     }
+
+    public function setCoins(Player $player, int $amount){
+      if($player instanceof Player){
+        $player = strtolower($player->getDisplayName());
+      }
+      return $this->db->query("UPDATE stats SET coins = $amount WHERE username='".$this->db->real_escape_string($player)."'");
+    }
+
+    // resets
+
+    public function resetCoins(Player $player){
+        return $this->setCoins($player, 0);
+    } 
 }

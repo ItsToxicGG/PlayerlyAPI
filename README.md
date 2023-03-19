@@ -2,12 +2,12 @@
 request anything that should be implemented in PlayerlyAPI
 # Todo-List
 - [X] Auth-System [BETA]
-- [ ] Ban-System
+- [X] Ban-System [BETA] [NEW]
 - [X] Mute-System
 - [X] StatsAPI
 - [ ] Level-System
 - [ ] Rank-System
-- [ ] Coins-System
+- [X] Coins-System [BETA] [NEW]
 - [ ] Points-System
 - [X] Mysql
 # Config
@@ -17,17 +17,11 @@ Get & Set
 ```php
 // to get or set something thats already in the api easily by
 
-// player is usally in the function, example:
-public function example(Player $player){ } // you see in the ( ) it defines Player to $player
-
-// $stats how to get
 use Toxic\Statics\Stats;
 
 public Stats $stats;
 
-public function onEnable(): void{
-    $stats = $this->getServer()->getPluginManager()->getPlugin("PlayerlyAPI");
-}
+$stats = $this->getServer()->getPluginManager()->getPlugin("PlayerlyAPI")
 
 $this->stats->getKills($player); // $player
 $this->stats->setWins($player, 1); // $player & an number/int/integar

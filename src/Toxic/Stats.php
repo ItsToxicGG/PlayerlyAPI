@@ -21,10 +21,10 @@ namespace Toxic;
 use mysqli;
 use pocketmine\plugin\PluginBase;
 use pocketmine\event\Listener;
-use pocketmine\event\player\{PlayerJoinEvent, PlayerQuitEvent, PlayerKickEvent, PlayerChatEvent};
+use pocketmine\event\player\{PlayerJoinEvent, PlayerQuitEvent, PlayerKickEvent, PlayerChatEvent, PlayerLoginEvent};
 use Toxic\api\{StatsAPI, MuteAPI, BanAPI};
 use Toxic\task\SessionTimeTask;
-use Toxic\command\{MuteCmd, UnMuteCmd};
+use Toxic\command\{MuteCmd, UnMuteCmd, MyCoinsCmd, OPCoinCommand, UnBanCommand, BanCommand};
 use pocketmine\player\Player;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
@@ -61,9 +61,17 @@ class Stats extends PluginBase implements Listener {
         $this->getServer()->getCommandMap()->register("unmute", new UnMuteCmd($this));
         $this->m = new MuteAPI($this);
         }
+        if($this->getConfig()->get("ban-system")){
+        $this->getServer()->getCommandMap()->register("ban", new BanCommand($this));
+        $this->getServer()->getCommandMap()->register("unban", new UnBanCommand($this));
+        $this->b = new BanAPI($this);    
+        }
+        if($this->getConfig()->get("coin-system") === true){
+        $this->getServer()->getCommandMap()->register("opcoins", new OPCoinsCommand($this));
+        $this->getServer()->getCommandMap()->register("mycoins", new MyCoinsCommand($this));
+        }
         $this->getScheduler()->scheduleRepeatingTask(new SessionTimeTask($this->db), 1200);
         $this->s = new StatsAPI($this);
-        $this->b = new BanAPI($this);
     }
 
     public function onCommand(CommandSender $sender, Command $command, string $label, array $args): bool {
@@ -116,12 +124,22 @@ class Stats extends PluginBase implements Listener {
 
     public function getMuteAPI(): MuteAPI
     {
-        return $this->m;
+        if($this->getConfig()->get("mute-system") === true){
+            $result = $this->m;
+        } else {
+            $result = "this cant be used, due to mutesystem is off!";
+        }
+        return $result;
     }
 
     public function getBanAPI(): BanAPI
     {
-        return $this->b;
+        if($this->getConfig()->get("ban-system") === true){
+            $result = $this->b;
+        } else {
+            $result = "this cant be used, due to bansystem is off!";
+        }
+        return $result;
     }
 
     public function loginForm($player){
@@ -193,15 +211,23 @@ class Stats extends PluginBase implements Listener {
         }
     }
 
+    public function onLogin(PlayerLoginEvent $event){
+        if($this->getConfig()->get("ban-system") === true){
+        if($this->getBanAPI()->isBanned()){
+            $event->cancel();
+        }
+        }
+    }
+
     public function onJoin(PlayerJoinEvent $event){
     $player = $event->getPlayer();
     $date = date("Y-m-d H:i:s");
     if(!$this->getStatsAPI()->accountExists(strtolower($player->getName()))){
         if(!$player->hasPlayedBefore()){
         $this->getStatsAPI()->db->query("INSERT INTO `stats`
-            (`username`, `uuid`, `xuid`, `breaks`, `places`, `deaths`,`kills`,`wins`,`time`, `playtime`, `joined`)
+            (`username`, `uuid`, `xuid`, `breaks`, `places`, `deaths`,`kills`,`wins`,`time`, `playtime`, `joined`, `coins`)
             VALUES
-            ('".$this->getStatsAPI()->db->escape_string(strtolower($player->getDisplayName()))."', '".$this->getStatsAPI()->db->real_escape_string(strtolower($player->getUniqueId()))."', '".$this->getStatsAPI()->db->real_escape_string(strtolower($player->getXuid()))."', '0','0','0','0','0','1','0', '$date')
+            ('".$this->getStatsAPI()->db->escape_string(strtolower($player->getDisplayName()))."', '".$this->getStatsAPI()->db->real_escape_string(strtolower($player->getUniqueId()))."', '".$this->getStatsAPI()->db->real_escape_string(strtolower($player->getXuid()))."', '0','0','0','0','0','1','0', '$date', '0')
         ");
         $player->sendMessage("Welcome to the server for the first time!");
         }

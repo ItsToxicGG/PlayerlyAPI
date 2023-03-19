@@ -87,10 +87,10 @@ class Stats extends PluginBase implements Listener {
             } else {
                 $playerName = strtolower($args[0]);
             }
-            $query = "SELECT * FROM stats WHERE username = '?'";
+            $query = "SELECT * FROM stats WHERE username = ?";
             $stmt = $this->getStatsAPI()->db->prepare($query);
             $stmt->bind_param("s", $playerName);
-            $stmt->execute();
+            $stmt->execute();            
             $result = $stmt->get_result();
             if($result->num_rows === 0) {
                 $sender->sendMessage("Stats not found for $playerName.");

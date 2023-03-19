@@ -130,6 +130,7 @@ class Stats extends PluginBase implements Listener {
     }
 
     public function getBannedStatus(Player $player, string $playerName){
+        $result = " ";  
         if($this->getConfig()->get("ban-system") === true){
         if($this->getBanAPI()->isBanned($playerName)){
             $result = "Yes";
@@ -142,10 +143,11 @@ class Stats extends PluginBase implements Listener {
         return $result;
     }
     public function getMuteStatus(Player $player, string $playerName){
+        $result = " ";
         if($this->getConfig()->get("mute-system") === true){
         if($this->getMuteAPI()->isMute($playerName)){
             $result = "Yes";
-        } else if($this->getConfig()->get("ban-system") !== true){
+        } else if($this->getConfig()->get("ban-system") === false){
             $result = "Mute System is disabled...";
         } else {
             $result = "No";

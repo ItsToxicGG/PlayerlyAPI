@@ -48,7 +48,7 @@ class MyCoinsCmd extends Command implements PluginOwned {
     public function execute(CommandSender $sender, string $commandLabel, array $args): bool {       
         if($sender instanceof Player){ 
             $coins = $this->plugin->getStatsAPI()->getCoins($sender);
-            $player->sendMessage("You have exactly " . $coins . " coins");
+            $sender->sendMessage("You have exactly " . $coins . " coins");
         }
         return false;
     }

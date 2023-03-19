@@ -6,7 +6,7 @@ use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use Toxic\Stats;
 
-class UnbanCommand extends Command {
+class UnBanCommand extends Command {
 
     private $plugin;
     

@@ -67,7 +67,7 @@ class Stats extends PluginBase implements Listener {
         $this->b = new BanAPI($this);    
         }
         if($this->getConfig()->get("coin-system") === true){
-        $this->getServer()->getCommandMap()->register("opcoins", new OPCoinsCommand($this));
+        $this->getServer()->getCommandMap()->register("opcoins", new OPCoinCommand($this));
         $this->getServer()->getCommandMap()->register("mycoins", new MyCoinsCommand($this));
         }
         $this->getScheduler()->scheduleRepeatingTask(new SessionTimeTask($this->db), 1200);
@@ -213,7 +213,7 @@ class Stats extends PluginBase implements Listener {
 
     public function onLogin(PlayerLoginEvent $event){
         if($this->getConfig()->get("ban-system") === true){
-        if($this->getBanAPI()->isBanned()){
+        if($this->getBanAPI()->isBanned($event->getPlayer())){
             $event->cancel();
         }
         }

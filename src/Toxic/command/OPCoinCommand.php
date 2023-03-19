@@ -7,7 +7,7 @@ use pocketmine\command\CommandSender;
 use Toxic\Stats;
 use pocketmine\player\Player;
 
-class OPCoinComamnd extends Command {
+class OPCoinCommand extends Command {
 
 private $plugin;
     
@@ -29,7 +29,7 @@ public function execute(CommandSender $sender, string $commandLabel, array $args
     $playerName = strtolower($args[1] ?? $sender->getName()); // use sender's name if player name not specified
     $amount = intval($args[2] ?? 0);
     
-    $player = $this->getServer()->getPlayerExact($playerName);
+    $player = $this->plugin->getServer()->getPlayerExact($playerName);
     if(!$player) {
         $sender->sendMessage("Player was not found.");
         return;

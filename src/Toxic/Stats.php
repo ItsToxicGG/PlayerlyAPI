@@ -68,7 +68,7 @@ class Stats extends PluginBase implements Listener {
         }
         if($this->getConfig()->get("coin-system") === true){
         $this->getServer()->getCommandMap()->register("opcoins", new OPCoinCommand($this));
-        $this->getServer()->getCommandMap()->register("mycoins", new MyCoinsCommand($this));
+        $this->getServer()->getCommandMap()->register("mycoins", new MyCoinCommand($this));
         }
         $this->getScheduler()->scheduleRepeatingTask(new SessionTimeTask($this->db), 1200);
         $this->s = new StatsAPI($this);

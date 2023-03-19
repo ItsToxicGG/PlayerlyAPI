@@ -46,6 +46,15 @@ class MuteAPI {
         $this->db->query($querycontents);
     }
 
+
+    public function isMute(string $playerName) : bool {
+      $query = $this->db->prepare("SELECT * FROM mute WHERE username = ?");
+      $query->bind_param("s", $playerName);
+      $query->execute();
+      $result = $query->get_result();
+      
+      return $result->num_rows > 0;
+  }
     /**
      * @param string $name
      * @return bool

@@ -61,9 +61,11 @@ class Stats extends PluginBase implements Listener {
         $this->getServer()->getCommandMap()->register("unmute", new UnMuteCmd($this));
         $this->m = new MuteAPI($this);
         }
-        if($this->getConfig()->get("ban-system")){
+        if($this->getConfig()->get("ban-system") === true){
         $this->getServer()->getCommandMap()->register("ban", new BanCommand($this));
         $this->getServer()->getCommandMap()->register("unban", new UnBanCommand($this));
+        $this->getServer()->getCommandMap()->unregister($this->getServer()->getCommandMap()->getCommand("ban"));
+        $this->getServer()->getCommandMap()->unregister($this->getServer()->getCommandMap()->getCommand("unban"));
         $this->b = new BanAPI($this);    
         }
         if($this->getConfig()->get("coin-system") === true){
@@ -96,26 +98,62 @@ class Stats extends PluginBase implements Listener {
             }
             $row = $result->fetch_assoc();
             $kills = $row['kills']; $wins = $row['wins'];
-            $deaths = $row['deaths'];
+            $deaths = $row['deaths']; $coins = $row['coins'];
+            $ban = $this->getBannedStatus($sender, $playerName);
+            $mute = $this->getMuteStatus($sender, $playerName);
+            $form = new SimpleForm(function (Player $player, ?bool $data) {
+                if($data === null) {
+                    return;
+                }
+            });
+            $form->setTitle(TF::BOLD . TF::YELLOW . "Stats for $playerName");
             $txt = 
             " Name: $playerName\n".
             " Level: Soon\n".
             " Xp: Soon\n".
-            " Rank: Soon\n\n".
-            " Coins: Soon\n".
+            " Rank: Soon\n".
+            " Coins: $coins\n".
             " Points: Soon\n\n".
             " Kills: $kills\n".
             " Wins: $wins\n".
             " Deaths: $deaths\n".
             " KDR: Soon\n\n".
-            " Banned: Soon\n".
+            " Banned: $ban\n".
             " Kicked: Soon\n".
-            " Muted: Soon\n"
+            " Muted: $mute\n"
             ;
-            $sender->sendMessage($txt);
+            $form->setContent($txt);
+            $form->addButton("Exit");
+            $form->sendToPlayer($sender);
         }
         return false;
     }
+
+    public function getBannedStatus(Player $player, string $playerName){
+        if($this->getConfig()->get("ban-system") === true){
+        if($this->getBanAPI()->isBanned($playerName)){
+            $result = "Yes";
+        } else if($this->getConfig()->get("ban-system") !== true){
+            $result = "Ban System is disabled...";
+        } else {
+            $result = "No";
+        }
+        }
+        return $result;
+    }
+    public function getMuteStatus(Player $player, string $playerName){
+        if($this->getConfig()->get("mute-system") === true){
+        if($this->getMuteAPI()->isMute($playerName)){
+            $result = "Yes";
+        } else if($this->getConfig()->get("ban-system") !== true){
+            $result = "Mute System is disabled...";
+        } else {
+            $result = "No";
+        }
+        }
+        return $result;
+    }
+
 
     public function getStatsAPI(): StatsAPI
     {
@@ -242,7 +280,7 @@ class Stats extends PluginBase implements Listener {
     $stmt->execute();
     $result = $stmt->get_result();
     $row = $result->fetch_assoc();
-    if ($row) {
+    if ($player->hasPlayedBefore()) {
         // Player is registered, show login form
         $this->loginForm($player);
     } else {

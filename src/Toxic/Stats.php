@@ -125,6 +125,7 @@ class Stats extends PluginBase implements Listener {
             $form->setContent($txt);
             $form->addButton("Exit");
             $form->sendToPlayer($sender);
+            return true;
         }
         return false;
     }

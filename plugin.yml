@@ -22,5 +22,5 @@ permissions:
     default: op
   toxic.unban.command:
     default: op
-  toxic.opcoins.command:
+  toxic.opcoin.command:
     default: op

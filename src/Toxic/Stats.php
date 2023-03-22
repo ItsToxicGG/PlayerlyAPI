@@ -148,7 +148,7 @@ class Stats extends PluginBase implements Listener {
         if($this->getConfig()->get("mute-system") == true){
         if($this->getMuteAPI()->isMute($playerName)){
             $result = "Yes";
-        } else if($this->getConfig()->get("ban-system") == false){
+        } else if($this->getConfig()->get("mute-system") == false){
             $result = "Mute System is disabled...";
         } else {
             $result = "No";

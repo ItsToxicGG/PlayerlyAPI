@@ -13,7 +13,8 @@ request anything that should be implemented **OR** fixed in PlayerlyAPI
 - [ ] Guild-System
 - [ ] Clan-System
 - [ ] Party-System
-- [ ] Credits-System
+- [ ] Credits-System [GOES WITH Tiers-System]
+- [ ] Tiers-System [GOES WITH Credits-System]
 - [ ] Souls-System
 - [X] Mysql
 # Config

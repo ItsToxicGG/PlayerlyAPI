@@ -1,5 +1,5 @@
 # PlayerlyAPI
-request anything that should be implemented in PlayerlyAPI
+request anything that should be implemented **OR** fixed in PlayerlyAPI
 # Todo-List
 - [X] Auth-System [BETA]
 - [X] Ban-System [BETA] [NEW]
@@ -9,6 +9,12 @@ request anything that should be implemented in PlayerlyAPI
 - [ ] Rank-System
 - [X] Coins-System [BETA] [NEW]
 - [ ] Points-System
+- [ ] Friends-System
+- [ ] Guild-System
+- [ ] Clan-System
+- [ ] Party-System
+- [ ] Credits-System
+- [ ] Souls-System
 - [X] Mysql
 # Config
 enter the mysql data in config.yml

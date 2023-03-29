@@ -5,6 +5,7 @@ request anything that should be implemented **OR** fixed in PlayerlyAPI
 - [X] Ban-System [BETA] [NEW]
 - [X] Mute-System
 - [X] StatsAPI
+- [ ] PlayTime-System
 - [ ] Level-System
 - [ ] Rank-System
 - [X] Coins-System [BETA] [NEW]

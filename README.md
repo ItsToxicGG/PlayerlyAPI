@@ -4,7 +4,7 @@ request anything that should be implemented **OR** fixed in PlayerlyAPI
 - [X] Auth-System [BETA]
 - [X] Ban-System [BETA] [NEW]
 - [X] Mute-System
-- [X] StatsAPI
+- [X] Basic API
 - [ ] Level-System
 - [ ] Rank-System
 - [X] Coins-System [BETA] [NEW]
@@ -16,7 +16,10 @@ request anything that should be implemented **OR** fixed in PlayerlyAPI
 - [ ] Credits-System [GOES WITH Tiers-System]
 - [ ] Tiers-System [GOES WITH Credits-System]
 - [ ] Souls-System
-- [X] Mysql
+- [ ] NickName-System
+- [ ] Fly-System
+- [ ] NickColor-System 
+- [X] Mysql [MAIN]
 # Config
 enter the mysql data in config.yml
 # How to Use the api

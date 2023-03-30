@@ -1,5 +1,9 @@
 # PlayerlyAPI
 request anything that should be implemented **OR** fixed in PlayerlyAPI
+## Main Goal
+To make the server as similar to an Nice Server
+By using mysql if your server has different lobbies it will display the same statics as you
+must use the same mysql details on each.
 # Todo-List
 - [X] Auth-System [BETA]
 - [X] Ban-System [BETA] [NEW]
@@ -8,17 +12,17 @@ request anything that should be implemented **OR** fixed in PlayerlyAPI
 - [ ] Level-System
 - [ ] Rank-System
 - [X] Coins-System [BETA] [NEW]
-- [ ] Points-System
+- [X] Points-System
 - [ ] Friends-System
 - [ ] Guild-System
 - [ ] Clan-System
 - [ ] Party-System
-- [ ] Credits-System [GOES WITH Tiers-System]
-- [ ] Tiers-System [GOES WITH Credits-System]
-- [ ] Souls-System
-- [ ] NickName-System
-- [ ] Fly-System
-- [ ] NickColor-System 
+- [X] Credits-System [GOES WITH Tiers-System]
+- [X] Tiers-System [GOES WITH Credits-System]
+- [X] Souls-System
+- [X] NickName-System
+- [X] Fly-System
+- [X] NickColor-System 
 - [X] Mysql [MAIN]
 # Config
 enter the mysql data in config.yml

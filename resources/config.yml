@@ -9,3 +9,11 @@ auth-system: false
 mute-system: true
 ban-system: true
 coin-system: false
+# credits & tiers goes together!
+credits-system: false
+tiers-system: false
+souls-system: false
+nickname-system: false
+fly-system: false
+nickcolor-system: false
+chatcolor-system: false

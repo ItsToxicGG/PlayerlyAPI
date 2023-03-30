@@ -243,6 +243,29 @@ class Stats extends PluginBase implements Listener {
         $form->sendToPlayer($player);
     }
 
+    private function setNickname($username, $nickname) {
+        $stmt = $this->getAssetAPI()->prepare("INSERT INTO nicknames (username, nickname) VALUES (?, ?) ON DUPLICATE KEY UPDATE nickname = ?");
+        $stmt->bind_param("sss", $playerName, $nickname, $nickname);
+        $stmt->execute();
+        $stmt->close();
+        $mysqli->close();
+    }
+    
+      private function getNickname($playerName) {
+        $stmt = $this->getAssetAPI()->prepare("SELECT nickname FROM nicknames WHERE username = ?");
+        $stmt->bind_param("s", $playerName);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $nickname = "";
+        if ($result->num_rows > 0) {
+          $row = $result->fetch_assoc();
+          $nickname = $row["nickname"];
+        }
+        $stmt->close();
+        $mysqli->close();
+        return $nickname;
+      }
+
     private function setLoggedIn(Player $player, $loggedIn){
         $username = $player->getName();
         if($loggedIn) {

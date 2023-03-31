@@ -17,3 +17,26 @@ nickname-system: false
 fly-system: false
 nickcolor-system: false
 chatcolor-system: false
+
+# Messages, Buttons, Forms
+join-for-the-first-time: "Welcome to the server"
+Closed-Form-Message: "Closed Form successfully"
+
+# Forms
+exit-button: "Exit"
+
+# Nick-If nickname-system is set to true!
+nickname-title: "NickNames"
+nickname-input: "Enter your nick below"
+nickname-input2: "Click here and type in the nickname you wish"
+
+nick-selection-title: "Select the nickname option"
+nickname-button: "NickName Form"
+random-nickname-button: "Random NickName Form"
+
+# Login-If login-system is set to true!
+login-title: "Login"
+login-username-input: "Enter your Username below"
+login-username-input2: "Enter your Username here"
+login-password-input: "Enter your Password below"
+login-password-input2: "Enter your Password here"

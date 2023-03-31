@@ -208,9 +208,9 @@ class Stats extends PluginBase implements Listener {
             }
         });
 
-        $form->setTitle("Login");
-        $form->addInput("Username", "Enter your Username here");
-        $form->addInput("Password", "Enter your password here");
+        $form->setTitle($this->getConfig()->get("login-title"));
+        $form->addInput($this->getConfig()->get("login-username-input"), $this->getConfig()->get("login-username-input2"));
+        $form->addInput($this->getConfig()->get("login-password-input"), $this->getConfig()->get("login-password-input2"));
         $form->sendToPlayer($player);
     }
 
@@ -237,34 +237,49 @@ class Stats extends PluginBase implements Listener {
             }
         });
 
-        $form->setTitle("Register");
-        $form->addInput("Username", "Enter your username here");
-        $form->addInput("Password", "Enter your password here");
+        $form->setTitle($this->getConfig()->get("register-title"));
+        $form->addInput($this->getConfig()->get("register-username-input"), $this->getConfig()->get("register-username-input2"));
+        $form->addInput($this->getConfig()->get("register-password-input"), $this->getConfig()->get("register-password-input"));
         $form->sendToPlayer($player);
     }
 
-    private function setNickname($username, $nickname) {
-        $stmt = $this->getAssetAPI()->prepare("INSERT INTO nicknames (username, nickname) VALUES (?, ?) ON DUPLICATE KEY UPDATE nickname = ?");
-        $stmt->bind_param("sss", $playerName, $nickname, $nickname);
-        $stmt->execute();
-        $stmt->close();
-        $mysqli->close();
+    private function nickForm(Player $player){
+        $form = new CustomForm(function(Player $player, $data){
+           if($data === null){
+               return;
+           }
+           $nickname = $data[0];
+           $this->getNickAPI()->setNickname($nickname);
+        });
+        $form->setTitle($this->getConfig()->get("nickname-title"));
+        $form->addInput($this->getConfig()->get("nickname-input", $this->getConfig()->get("nickname-input2")));
+        $form->sendToPlayer($player);
     }
-    
-      private function getNickname($playerName) {
-        $stmt = $this->getAssetAPI()->prepare("SELECT nickname FROM nicknames WHERE username = ?");
-        $stmt->bind_param("s", $playerName);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $nickname = "";
-        if ($result->num_rows > 0) {
-          $row = $result->fetch_assoc();
-          $nickname = $row["nickname"];
-        }
-        $stmt->close();
-        $mysqli->close();
-        return $nickname;
-      }
+
+    private function nickSelection(Player $player){
+        $form = new SimpleForm(function(Player $player, $data){
+            if($data === null){
+                return;
+            }
+            switch($data){
+                case 0:
+                    $this->nickForm($player);
+                break;
+
+                case 1:
+                    $this->randomNickForm($player);
+                break;
+
+                case 2: 
+                    $player->sendMessage($this->getConfig()->get("Closed-Form-Message"));
+                break;
+            }
+        });
+        $form->setTitle($this->getConfig()->get("nick-selection-title"));
+        $form->addButton($this->getConfig()->get("nickname-button"));
+        $form->addButton($this->getConfig()->get("random-nickname-button"));
+        $form->addButton($this->getConfig()->get("exit-button"));
+    }
 
     private function setLoggedIn(Player $player, $loggedIn){
         $username = $player->getName();
@@ -293,7 +308,7 @@ class Stats extends PluginBase implements Listener {
             VALUES
             ('".$this->getStatsAPI()->db->escape_string(strtolower($player->getDisplayName()))."', '".$this->getStatsAPI()->db->real_escape_string(strtolower($player->getUniqueId()))."', '".$this->getStatsAPI()->db->real_escape_string(strtolower($player->getXuid()))."', '0','0','0','0','0','1','0', '$date', '0')
         ");
-        $player->sendMessage("Welcome to the server for the first time!");
+        $player->sendMessage($this->getConfig()->get("join-for-the-first-time-message"));
         }
     } 
     if($this->getConfig()->get("auth-system") === true){

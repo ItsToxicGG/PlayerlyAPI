@@ -24,20 +24,23 @@ use pocketmine\Server;
 
 class SessionTimeTask extends Task {
 
-/** @var \mysqli */
-private $db;
+    const BATCH_SIZE = 10;
 
-public function __construct(\mysqli $db) {
-    $this->db = $db;
-}
+    /** @var \mysqli */
+    private $db;
+
+    public function __construct(\mysqli $db) {
+        $this->db = $db;
+    }
+
     public function onRun() : void {
         $players = Server::getInstance()->getOnlinePlayers();
         $numPlayers = count($players);
 
         // Batch the queries and updates
         $batchedQueries = [];
-        for ($i = 0; $i < $numPlayers; $i += $this->batchSize) {
-            $batch = array_slice($players, $i, $this->batchSize);
+        for ($i = 0; $i < $numPlayers; $i += self::BATCH_SIZE) {
+            $batch = array_slice($players, $i, self::BATCH_SIZE);
             $usernames = array_map(function($player) {
                 return strtolower($player->getName());
             }, $batch);

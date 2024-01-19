@@ -1,8 +1,8 @@
 name: PlayerlyAPI
 description: playerly api for stats
 version: 0.1.0 
-api: 4.0.0 # for 5.0.0, check 5.0.0 branch, 3.0.0 (if using betteraltay or ?) will be implemented in the future mabye! 
-author: [Toxic, UnknownNull]
+api: 5.0.0 # for 5.0.0, check 5.0.0 branch, 3.0.0 (if using betteraltay or ?) will be implemented in the future mabye! 
+authors: ['Toxic', 'UnknownNull']
 main: Toxic\Stats
 
 commands:
